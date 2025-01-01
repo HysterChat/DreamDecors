@@ -65,7 +65,7 @@ try {
     }
 
     // Email configuration
-    $to = "joshantonybj@gmail.com"; // Replace with your email
+    $to = "sarathyadav112@gmail.com"; // Replace with your email
     $subject = "New Event Booking Request from {$formData['firstName']} {$formData['lastName']}";
 
     // Create email content
