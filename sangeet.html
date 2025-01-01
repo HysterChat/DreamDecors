@@ -3465,186 +3465,198 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 
+
 <script>
-class InfiniteGallery {
-    constructor() {
-        this.slider = document.querySelector('.gallery-container');
-        this.scrollContainer = document.querySelector('.gallery-scroll');
-        this.isDown = false;
-        this.startX = null;
-        this.scrollLeft = null;
-        this.currentImageIndex = 0;
-        this.images = document.querySelectorAll('.gallery-item img');
-        this.autoScrollInterval = null;
-        this.autoScrollSpeed = 2;
-        this.itemsToClone = 50;
-        this.threshold = 100;
-        document.querySelector('.modal .close').addEventListener('click', () => this.closeModal());
-        this.bookNowBtns = document.querySelectorAll('.book-now-btn'); // Add this line
-
-
-        
-        this.init();
-    }
-
-    init() {
-        this.setupInfiniteScroll();
-        this.bindEvents();
-        this.startAutoScroll();
-        this.initializeScrollPosition();
-    }
-
-    setupInfiniteScroll() {
-        const items = Array.from(document.querySelectorAll('.gallery-group, .gallery-item.large'));
-        const totalWidth = items.reduce((acc, item) => acc + item.offsetWidth + 20, 0);
-        
-        // Clone beginning items and add to end
-        for(let i = 0; i < Math.min(this.itemsToClone, items.length); i++) {
-            const clone = items[i].cloneNode(true);
-            clone.classList.add('cloned');
-            this.scrollContainer.appendChild(clone);
-        }
-        
-        // Clone end items and add to beginning
-        for(let i = items.length - 1; i > Math.max(-1, items.length - this.itemsToClone - 1); i--) {
-            const clone = items[i].cloneNode(true);
-            clone.classList.add('cloned');
-            this.scrollContainer.insertBefore(clone, this.scrollContainer.firstChild);
-        }
-
-        // Update click handlers for all images
-        this.updateClickHandlers();
-    }
-
-    updateClickHandlers() {
-        document.querySelectorAll('.gallery-item img').forEach(img => {
-            img.onclick = () => this.openModal(img);
-        });
-    }
-
-    checkScroll() {
-        const scrollWidth = this.scrollContainer.scrollWidth;
-        const containerWidth = this.slider.offsetWidth;
-        const scrollPosition = this.slider.scrollLeft;
-        
-        if (scrollPosition <= this.threshold) {
-            this.slider.scrollLeft = (scrollWidth / 3) + scrollPosition;
-        } else if (scrollPosition >= (scrollWidth - containerWidth - this.threshold)) {
-            this.slider.scrollLeft = (scrollWidth / 3);
-        }
-    }
-
-    bindEvents() {
-        // Mouse events
-        this.slider.addEventListener('mousedown', (e) => this.startDragging(e));
-        this.slider.addEventListener('mousemove', (e) => this.drag(e));
-        this.slider.addEventListener('mouseup', () => this.stopDragging());
-        this.slider.addEventListener('mouseleave', () => this.stopDragging());
-
-        // Touch events
-        this.slider.addEventListener('touchstart', (e) => this.startDragging(e));
-        this.slider.addEventListener('touchmove', (e) => this.drag(e));
-        this.slider.addEventListener('touchend', () => this.stopDragging());
-
-        // Hover events
-        this.slider.addEventListener('mouseenter', () => this.stopAutoScroll());
-        this.slider.addEventListener('mouseleave', () => this.startAutoScroll());
-
-        // Scroll event
-        this.slider.addEventListener('scroll', () => this.checkScroll());
-
-        // Keyboard events for modal
-        document.addEventListener('keydown', (e) => this.handleKeyPress(e));
-    }
-
-    startDragging(e) {
-        this.isDown = true;
-        this.slider.style.cursor = 'grabbing';
-        this.startX = e.type === 'mousedown' ? e.pageX : e.touches[0].pageX;
-        this.scrollLeft = this.slider.scrollLeft;
-        this.stopAutoScroll();
-    }
-
-    drag(e) {
-        if (!this.isDown) return;
-        e.preventDefault();
-        const x = e.type === 'mousemove' ? e.pageX : e.touches[0].pageX;
-        const walk = (x - this.startX) * 2;
-        this.slider.scrollLeft = this.scrollLeft - walk;
-    }
-
-    stopDragging() {
-        this.isDown = false;
-        this.slider.style.cursor = 'grab';
-        this.startAutoScroll();
-    }
-
-    startAutoScroll() {
-        this.stopAutoScroll();
-        this.autoScrollInterval = setInterval(() => {
-            this.slider.scrollLeft += this.autoScrollSpeed;
-            this.checkScroll();
-        }, 30);
-    }
-
-    stopAutoScroll() {
-        if (this.autoScrollInterval) {
-            clearInterval(this.autoScrollInterval);
+    class InfiniteGallery {
+        constructor() {
+            this.slider = document.querySelector('.gallery-container');
+            this.scrollContainer = document.querySelector('.gallery-scroll');
+            this.isDown = false;
+            this.startX = null;
+            this.scrollLeft = null;
+            this.currentImageIndex = 0;
+            this.images = document.querySelectorAll('.gallery-item img');
             this.autoScrollInterval = null;
+            this.autoScrollSpeed = 2.5;
+            this.itemsToClone = 5;
+            this.threshold = 100;
+    
+            // Store modal elements
+            this.modal = document.getElementById('modal');
+            this.modalImg = document.getElementById('modal-img');
+            this.closeBtn = this.modal.querySelector('.close');
+            this.prevBtn = this.modal.querySelector('.prev');
+            this.nextBtn = this.modal.querySelector('.next');
+            
+            // Bind modal controls
+            this.closeBtn.addEventListener('click', () => this.closeModal());
+            this.prevBtn.addEventListener('click', () => this.changeImage(-1));
+            this.nextBtn.addEventListener('click', () => this.changeImage(1));
+            
+            this.init();
+        }
+    
+        init() {
+            this.setupInfiniteScroll();
+            this.bindEvents();
+            this.startAutoScroll();
+            this.initializeScrollPosition();
+        }
+    
+        setupInfiniteScroll() {
+            const items = Array.from(document.querySelectorAll('.gallery-group, .gallery-item.large'));
+            const totalWidth = items.reduce((acc, item) => acc + item.offsetWidth + 20, 0);
+            
+            // Clone beginning items and add to end
+            for(let i = 0; i < Math.min(this.itemsToClone, items.length); i++) {
+                const clone = items[i].cloneNode(true);
+                clone.classList.add('cloned');
+                this.scrollContainer.appendChild(clone);
+            }
+            
+            // Clone end items and add to beginning
+            for(let i = items.length - 1; i > Math.max(-1, items.length - this.itemsToClone - 1); i--) {
+                const clone = items[i].cloneNode(true);
+                clone.classList.add('cloned');
+                this.scrollContainer.insertBefore(clone, this.scrollContainer.firstChild);
+            }
+    
+            // Update click handlers for all images
+            this.updateClickHandlers();
+        }
+    
+        updateClickHandlers() {
+            document.querySelectorAll('.gallery-item img').forEach(img => {
+                img.onclick = () => this.openModal(img);
+            });
+        }
+    
+        checkScroll() {
+            const scrollWidth = this.scrollContainer.scrollWidth;
+            const containerWidth = this.slider.offsetWidth;
+            const scrollPosition = this.slider.scrollLeft;
+            
+            if (scrollPosition <= this.threshold) {
+                this.slider.scrollLeft = (scrollWidth / 3) + scrollPosition;
+            } else if (scrollPosition >= (scrollWidth - containerWidth - this.threshold)) {
+                this.slider.scrollLeft = (scrollWidth / 3);
+            }
+        }
+    
+        bindEvents() {
+            // Mouse events
+            this.slider.addEventListener('mousedown', (e) => this.startDragging(e));
+            this.slider.addEventListener('mousemove', (e) => this.drag(e));
+            this.slider.addEventListener('mouseup', () => this.stopDragging());
+            this.slider.addEventListener('mouseleave', () => this.stopDragging());
+    
+            // Touch events
+            this.slider.addEventListener('touchstart', (e) => this.startDragging(e));
+            this.slider.addEventListener('touchmove', (e) => this.drag(e));
+            this.slider.addEventListener('touchend', () => this.stopDragging());
+    
+            // Hover events
+            this.slider.addEventListener('mouseenter', () => this.stopAutoScroll());
+            this.slider.addEventListener('mouseleave', () => this.startAutoScroll());
+    
+            // Scroll event
+            this.slider.addEventListener('scroll', () => this.checkScroll());
+    
+            // Keyboard events for modal
+            document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+        }
+    
+        startDragging(e) {
+            this.isDown = true;
+            this.slider.style.cursor = 'grabbing';
+            this.startX = e.type === 'mousedown' ? e.pageX : e.touches[0].pageX;
+            this.scrollLeft = this.slider.scrollLeft;
+            this.stopAutoScroll();
+        }
+    
+        drag(e) {
+            if (!this.isDown) return;
+            e.preventDefault();
+            const x = e.type === 'mousemove' ? e.pageX : e.touches[0].pageX;
+            const walk = (x - this.startX) * 2;
+            this.slider.scrollLeft = this.scrollLeft - walk;
+        }
+    
+        stopDragging() {
+            this.isDown = false;
+            this.slider.style.cursor = 'grab';
+            this.startAutoScroll();
+        }
+    
+        startAutoScroll() {
+            this.stopAutoScroll();
+            this.autoScrollInterval = setInterval(() => {
+                this.slider.scrollLeft += this.autoScrollSpeed;
+                this.checkScroll();
+            }, 30);
+        }
+    
+        stopAutoScroll() {
+            if (this.autoScrollInterval) {
+                clearInterval(this.autoScrollInterval);
+                this.autoScrollInterval = null;
+            }
+        }
+    
+        initializeScrollPosition() {
+            setTimeout(() => {
+                this.slider.scrollLeft = this.scrollContainer.scrollWidth / 3;
+            }, 100);
+        }
+    
+        openModal(imgElement) {
+            this.modal.style.display = 'block';
+            this.modalImg.src = imgElement.src;
+            this.currentImageIndex = Array.from(this.images).indexOf(imgElement);
+            this.stopAutoScroll();
+            
+            // Show navigation buttons
+            this.prevBtn.style.display = 'block';
+            this.nextBtn.style.display = 'block';
+        }
+    
+        closeModal() {
+            this.modal.style.display = 'none';
+            this.startAutoScroll();
+        }
+    
+        changeImage(direction) {
+            this.currentImageIndex += direction;
+            if (this.currentImageIndex >= this.images.length) this.currentImageIndex = 0;
+            if (this.currentImageIndex < 0) this.currentImageIndex = this.images.length - 1;
+            this.modalImg.src = this.images[this.currentImageIndex].src;
+        }
+    
+        handleKeyPress(event) {
+            if (this.modal.style.display === 'block') {
+                if (event.key === 'Escape') this.closeModal();
+                if (event.key === 'ArrowLeft') this.changeImage(-1);
+                if (event.key === 'ArrowRight') this.changeImage(1);
+            }
         }
     }
-
-    initializeScrollPosition() {
-        setTimeout(() => {
-            this.slider.scrollLeft = this.scrollContainer.scrollWidth / 3;
-        }, 100);
-    }
-
-    openModal(imgElement) {
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modal-img');
-        modal.style.display = 'block';
-        modalImg.src = imgElement.src;
-        this.currentImageIndex = Array.from(this.images).indexOf(imgElement);
-        this.stopAutoScroll();
-        this.bookNowBtns.forEach(btn => btn.classList.add('hidden'));
-
-    }
-
-    closeModal() {
-        document.getElementById('modal').style.display = 'none';
-        this.startAutoScroll();
-        this.bookNowBtns.forEach(btn => btn.classList.remove('hidden'));
-
-    }
-
-    changeImage(direction) {
-        this.currentImageIndex += direction;
-        if (this.currentImageIndex >= this.images.length) this.currentImageIndex = 0;
-        if (this.currentImageIndex < 0) this.currentImageIndex = this.images.length - 1;
-        document.getElementById('modal-img').src = this.images[this.currentImageIndex].src;
-    }
-
-    handleKeyPress(event) {
-        if (event.key === 'Escape') this.closeModal();
-        if (event.key === 'ArrowLeft') this.changeImage(-1);
-        if (event.key === 'ArrowRight') this.changeImage(1);
-    }
-}
-
-// Initialize gallery on page load
-window.addEventListener('load', () => {
-    const gallery = new InfiniteGallery();
-});
-</script>
-
-<!-- Modal HTML -->
-<div id="modal" class="modal">
-    <span class="close" onclick="gallery.closeModal()">&times;</span>
-    <button class="modal-nav prev" onclick="gallery.changeImage(-1)">❮</button>
-    <img id="modal-img" src="" alt="Modal Image">
-    <button class="modal-nav next" onclick="gallery.changeImage(1)">❯</button>
-</div>
+    
+    // Store gallery instance globally
+    let gallery;
+    
+    // Initialize gallery on page load
+    window.addEventListener('load', () => {
+        gallery = new InfiniteGallery();
+    });
+    </script>
+    
+    <!-- Modal HTML -->
+    <div id="modal" class="modal">
+        <span class="close">&times;</span>
+        <button class="modal-nav prev">❮</button>
+        <img id="modal-img" src="" alt="Modal Image">
+        <button class="modal-nav next">❯</button>
+    </div>
 
 <section id="comp-lodif2px" tabindex="-1" data-block-level-container="Section" class="xuzjBY comp-lodif2px-container comp-lodif2px wixui-section undefined" data-testid="section-container"><div id="bgLayers_comp-lodif2px" data-hook="bgLayers" data-motion-part="BG_LAYER" class="MW5IWV"><div data-testid="colorUnderlay" class="LWbAav Kv1aVt"></div><div id="bgMedia_comp-lodif2px" data-motion-part="BG_MEDIA" class="VgO9Yg"></div></div></section><div id="comp-lnye41je3" class="comp-lnye41je3 S6Dcte comp-lnye41je3-container" slots="[object Object]"><section id="comp-lnye41je3_r_comp-lnr3x65k" tabindex="-1" data-block-level-container="Section" class="xuzjBY comp-lnye41je3_r_comp-lnr3x65k wixui-section" data-testid="section-container"><div id="bgLayers_comp-lnye41je3_r_comp-lnr3x65k" data-hook="bgLayers" data-motion-part="BG_LAYER" class="MW5IWV"><div data-testid="colorUnderlay" class="LWbAav Kv1aVt"></div><div id="bgMedia_comp-lnye41je3_r_comp-lnr3x65k" data-motion-part="BG_MEDIA" class="VgO9Yg"></div></div><div data-testid="responsive-container-content" class="comp-lnye41je3_r_comp-lnr3x65k-container"><div id="comp-lnye41je3_r_comp-lnr3x65s" role="" class="rM7ckN YJEKQk comp-lnye41je3_r_comp-lnr3x65s-container comp-lnye41je3_r_comp-lnr3x65s wixui-box"><div class="YAf4Ti InKIFF wixui-box"></div><div id="comp-lnye41je3_r_comp-lnr3x65u1" role="" class="rM7ckN YJEKQk comp-lnye41je3_r_comp-lnr3x65u1-container comp-lnye41je3_r_comp-lnr3x65u1 wixui-box"><div class="YAf4Ti InKIFF wixui-box"></div><div id="comp-lnye41je3_r_comp-lnr3x65w" class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lnye41je3_r_comp-lnr3x65w wixui-rich-text" data-testid="richTextElement"><h1 class="font_0 wixui-rich-text__text"><span class="wixui-rich-text__text">SAY HI TO YOUR PLANNER</span></h1></div><div id="comp-lnye41je3_r_comp-lnr3x6601" class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lnye41je3_r_comp-lnr3x6601 wixui-rich-text" data-testid="richTextElement"><p class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text">ENJOY OUR MOMENTS TOGETHER</span></p></div></div></div><div id="comp-lnye41je3_r_comp-lnr3x6622" role="" class="rM7ckN YJEKQk comp-lnye41je3_r_comp-lnr3x6622 wixui-box"><div class="YAf4Ti InKIFF wixui-box"></div><div data-testid="responsive-container-content" class="comp-lnye41je3_r_comp-lnr3x6622-container"><!--$--><div id="comp-lnye41je3_r_comp-lnr3x664" class="TWFxr5 "><div class="comp-lnye41je3_r_comp-lnr3x664"><div style="--wix-color-29:var(--wix-color-3);--wix-color-37:var(--wix-color-5);--wix-color-38:var(--wix-color-8);--wix-color-39:var(--wix-color-8);--wix-color-40:var(--wix-color-1);--wix-color-41:var(--wix-color-8);--wix-color-42:var(--wix-color-8);--wix-color-43:var(--wix-color-1);--wix-color-44:var(--wix-color-3);--wix-color-45:var(--wix-color-8);--wix-color-46:var(--wix-color-1);--wix-color-47:var(--wix-color-1);--wix-color-48:var(--wix-color-8);--wix-color-49:var(--wix-color-8);--wix-color-50:var(--wix-color-1);--wix-color-51:var(--wix-color-8);--wix-color-52:var(--wix-color-8);--wix-color-53:var(--wix-color-1);--wix-color-54:var(--wix-color-3);--wix-color-55:var(--wix-color-3)" data-hook="tpa-components-provider"><div style="--index667083180-shadowXOffset:0px;--index667083180-shadowYOffset:0px;overflow:visible" class="skymIZO" data-hook="Form-wrapper"><div style="--wix-direction:ltr;--submitButtonStyle:3;--submitButtonBorderWidth:1;--submitButtonBorderRadius:100;--inputBorderStyle:2;--horizontalPadding:24;--verticalPadding:24;--rowSpacing:24;--columnSpacing:24;--borderWidth:0;--borderRadius:0;--shadowAngle:135;--shadowDistance:0;--shadowSize:0;--shadowBlur:25;--buttonsStyle:2;--buttonsBorderWidth:0;--buttonsBorderRadius:0;--nextButtonStyle:2;--nextButtonBorderWidth:0;--nextButtonBorderRadius:0;--previousButtonStyle:2;--previousButtonBorderWidth:1;--previousButtonBorderRadius:0;--inputBorderWidth:1;--inputBorderRadius:0;--nextButtonFont:normal normal normal 16px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--previousButtonFont:normal normal normal 16px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--headerOneFont:normal normal normal 28px/1.4em wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--headerTwoFont:normal normal normal 22px/1.4em wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--paragraphFont:normal normal normal 16px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputLabelFont:normal normal normal 14px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputValueFont:normal normal normal 16px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputNoteFont:normal normal normal 14px/1.4em wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--submitButtonBorderColor:255,255,255,0;--submitButtonBorderColor-rgb:255,255,255;--submitButtonBorderColor-opacity:0;--formBackground:255,255,255,0;--formBackground-rgb:255,255,255;--formBackground-opacity:0;--submitButtonColorHover:101,110,81;--submitButtonColorHover-rgb:101,110,81;--submitButtonColorHover-opacity:1;--inputBackgroundColor:255,255,255,0;--inputBackgroundColor-rgb:255,255,255;--inputBackgroundColor-opacity:0;--submitButtonBorderColorHover:101,110,81;--submitButtonBorderColorHover-rgb:101,110,81;--submitButtonBorderColorHover-opacity:1;--submitButtonBackgroundColor:101,110,81;--submitButtonBackgroundColor-rgb:101,110,81;--submitButtonBackgroundColor-opacity:1;--submitButtonBackgroundColorHover:26,106,255,0;--submitButtonBackgroundColorHover-rgb:26,106,255;--submitButtonBackgroundColorHover-opacity:0;--borderColor:0,0,0,0;--borderColor-rgb:0,0,0;--borderColor-opacity:0;--shadowColor:0,0,0,0.15;--shadowColor-rgb:0,0,0;--shadowColor-opacity:0.15;--buttonsColor:255,255,255;--buttonsColor-rgb:255,255,255;--buttonsColor-opacity:1;--buttonsBackgroundColor:26,106,255;--buttonsBackgroundColor-rgb:26,106,255;--buttonsBackgroundColor-opacity:1;--buttonsBorderColor:255,255,255,0;--buttonsBorderColor-rgb:255,255,255;--buttonsBorderColor-opacity:0;--buttonsColorHover:255,255,255;--buttonsColorHover-rgb:255,255,255;--buttonsColorHover-opacity:1;--buttonsBackgroundColorHover:26,106,255,0.7;--buttonsBackgroundColorHover-rgb:26,106,255;--buttonsBackgroundColorHover-opacity:0.7;--submitButtonColor:255,255,255;--submitButtonColor-rgb:255,255,255;--submitButtonColor-opacity:1;--nextButtonColor:255,255,255;--nextButtonColor-rgb:255,255,255;--nextButtonColor-opacity:1;--nextButtonBackgroundColor:26,106,255;--nextButtonBackgroundColor-rgb:26,106,255;--nextButtonBackgroundColor-opacity:1;--nextButtonBorderColor:255,255,255,0;--nextButtonBorderColor-rgb:255,255,255;--nextButtonBorderColor-opacity:0;--nextButtonColorHover:255,255,255;--nextButtonColorHover-rgb:255,255,255;--nextButtonColorHover-opacity:1;--nextButtonBackgroundColorHover:26,106,255,0.7;--nextButtonBackgroundColorHover-rgb:26,106,255;--nextButtonBackgroundColorHover-opacity:0.7;--nextButtonBorderColorHover:255,255,255,0;--nextButtonBorderColorHover-rgb:255,255,255;--nextButtonBorderColorHover-opacity:0;--previousButtonColor:0,0,0;--previousButtonColor-rgb:0,0,0;--previousButtonColor-opacity:1;--previousButtonBackgroundColor:26,106,255,0;--previousButtonBackgroundColor-rgb:26,106,255;--previousButtonBackgroundColor-opacity:0;--previousButtonBorderColor:0,0,0;--previousButtonBorderColor-rgb:0,0,0;--previousButtonBorderColor-opacity:1;--previousButtonColorHover:255,255,255;--previousButtonColorHover-rgb:255,255,255;--previousButtonColorHover-opacity:1;--previousButtonBackgroundColorHover:26,106,255,0.7;--previousButtonBackgroundColorHover-rgb:26,106,255;--previousButtonBackgroundColorHover-opacity:0.7;--previousButtonBorderColorHover:255,255,255,0;--previousButtonBorderColorHover-rgb:255,255,255;--previousButtonBorderColorHover-opacity:0;--headerOneColor:0,0,0;--headerOneColor-rgb:0,0,0;--headerOneColor-opacity:1;--headerTwoColor:0,0,0;--headerTwoColor-rgb:0,0,0;--headerTwoColor-opacity:1;--paragraphColor:0,0,0;--paragraphColor-rgb:0,0,0;--paragraphColor-opacity:1;--inputBackgroundColorHover:255,255,255,0;--inputBackgroundColorHover-rgb:255,255,255;--inputBackgroundColorHover-opacity:0;--inputBorderColor:0,0,0,0.6;--inputBorderColor-rgb:0,0,0;--inputBorderColor-opacity:0.6;--inputBorderColorHover:0,0,0;--inputBorderColorHover-rgb:0,0,0;--inputBorderColorHover-opacity:1;--inputLabelColor:0,0,0;--inputLabelColor-rgb:0,0,0;--inputLabelColor-opacity:1;--inputValueColor:0,0,0;--inputValueColor-rgb:0,0,0;--inputValueColor-opacity:1;--inputNoteColor:79,79,79;--inputNoteColor-rgb:79,79,79;--inputNoteColor-opacity:1;--inputPlaceholderColor:79,79,79;--inputPlaceholderColor-rgb:79,79,79;--inputPlaceholderColor-opacity:1;--inputSelectionColor:26,106,255;--inputSelectionColor-rgb:26,106,255;--inputSelectionColor-opacity:1;--linkColor:26,106,255;--linkColor-rgb:26,106,255;--linkColor-opacity:1;--inputErrorColor:223,49,49;--inputErrorColor-rgb:223,49,49;--inputErrorColor-opacity:1;--submitButtonFont:normal normal normal 16px/20px wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--submitButtonFont-style:normal;--submitButtonFont-variant:normal;--submitButtonFont-weight:normal;--submitButtonFont-size:16px;--submitButtonFont-line-height:20px;--submitButtonFont-family:wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--submitButtonFont-text-decoration:none;--nextButtonFont-style:normal;--nextButtonFont-variant:normal;--nextButtonFont-weight:normal;--nextButtonFont-size:16px;--nextButtonFont-line-height:1.4em;--nextButtonFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--nextButtonFont-text-decoration:none;--previousButtonFont-style:normal;--previousButtonFont-variant:normal;--previousButtonFont-weight:normal;--previousButtonFont-size:16px;--previousButtonFont-line-height:1.4em;--previousButtonFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--previousButtonFont-text-decoration:none;--headerOneFont-style:normal;--headerOneFont-variant:normal;--headerOneFont-weight:normal;--headerOneFont-size:28px;--headerOneFont-line-height:1.4em;--headerOneFont-family:wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--headerOneFont-text-decoration:none;--headerTwoFont-style:normal;--headerTwoFont-variant:normal;--headerTwoFont-weight:normal;--headerTwoFont-size:22px;--headerTwoFont-line-height:1.4em;--headerTwoFont-family:wfont_0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea,wf_a469ac7becd54a8ca8be493e6,orig_jassime;--headerTwoFont-text-decoration:none;--paragraphFont-style:normal;--paragraphFont-variant:normal;--paragraphFont-weight:normal;--paragraphFont-size:16px;--paragraphFont-line-height:1.4em;--paragraphFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--paragraphFont-text-decoration:none;--inputLabelFont-style:normal;--inputLabelFont-variant:normal;--inputLabelFont-weight:normal;--inputLabelFont-size:14px;--inputLabelFont-line-height:1.4em;--inputLabelFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputLabelFont-text-decoration:none;--inputValueFont-style:normal;--inputValueFont-variant:normal;--inputValueFont-weight:normal;--inputValueFont-size:16px;--inputValueFont-line-height:1.4em;--inputValueFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputValueFont-text-decoration:none;--inputNoteFont-style:normal;--inputNoteFont-variant:normal;--inputNoteFont-weight:normal;--inputNoteFont-size:14px;--inputNoteFont-line-height:1.4em;--inputNoteFont-family:wfont_b57df7_2d51552ba4854b449e16cdf5119be9c6,wf_2d51552ba4854b449e16cdf51,orig_satoshi_regular;--inputNoteFont-text-decoration:none"><div style="--wix-color-29:var(--wix-color-3);--wix-color-37:var(--wix-color-5);--wix-color-38:var(--wix-color-8);--wix-color-39:var(--wix-color-8);--wix-color-40:var(--wix-color-1);--wix-color-41:var(--wix-color-8);--wix-color-42:var(--wix-color-8);--wix-color-43:var(--wix-color-1);--wix-color-44:var(--wix-color-3);--wix-color-45:var(--wix-color-8);--wix-color-46:var(--wix-color-1);--wix-color-47:var(--wix-color-1);--wix-color-48:var(--wix-color-8);--wix-color-49:var(--wix-color-8);--wix-color-50:var(--wix-color-1);--wix-color-51:var(--wix-color-8);--wix-color-52:var(--wix-color-8);--wix-color-53:var(--wix-color-1);--wix-color-54:var(--wix-color-3);--wix-color-55:var(--wix-color-3)" data-hook="tpa-components-provider"><form aria-label="My Form" id="form-c457617b-13d3-42a3-bd7b-708878f0f5fd" data-hook="form-c457617b-13d3-42a3-bd7b-708878f0f5fd" class=""><fieldset><div data-hook="form-root"><div class="AxNTep" dir="" style="gap:24px"><div style="grid-template-columns:repeat(12, 1fr);grid-auto-rows:minmax(min-content, max-content) 1fr;column-gap:24px" class="FNgTtb"><div style="grid-row:1 / span 1;grid-column:1 / span 6" class="QPXBDg"><label id="form-field-label-9f750e3d-34e4-4997-9c51-32084ba0408a-:R7:" for="form-field-input-9f750e3d-34e4-4997-9c51-32084ba0408a-:R7:" class="saPfvMZ sGDCpNN">Your Name
 <span aria-hidden="true" class="sp32HM2">*</span></label></div><div style="grid-row:2 / span 1;grid-column:1 / span 6" data-hook="form-field-first_name_9dd3" data-field-type="CONTACTS_FIRST_NAME"><div class="sNtkEp_ oljqaa8---theme-4-line oljqaa8--newErrorMessage sRr84UU"><div class="sbPeOQ4 sqoQUFv"><div class="scJYHE5 sNounrK oljqaa8---theme-4-line" data-theme="line" data-success="false" data-error="false" data-empty-state="true"><input id="form-field-input-9f750e3d-34e4-4997-9c51-32084ba0408a-:R7:" data-theme="line" data-success="false" data-error="false" data-empty-state="true" aria-invalid="false" required="" aria-label="Your Name

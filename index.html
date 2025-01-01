@@ -53359,7 +53359,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
         </span>
         <div class="video-container">
             <video id="popupVideo"controls preload="metadata">
-                <source src="media/video/Short.mp4" type="video/mp4">
+                <source src="media/Video/Short.mov" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="play-button" onclick="toggleVideo()">
@@ -54260,8 +54260,18 @@ class InfiniteGallery {
         this.autoScrollSpeed = 2.5;
         this.itemsToClone = 5;
         this.threshold = 100;
-        document.querySelector('.modal .close').addEventListener('click', () => this.closeModal());
 
+        // Store modal elements
+        this.modal = document.getElementById('modal');
+        this.modalImg = document.getElementById('modal-img');
+        this.closeBtn = this.modal.querySelector('.close');
+        this.prevBtn = this.modal.querySelector('.prev');
+        this.nextBtn = this.modal.querySelector('.next');
+        
+        // Bind modal controls
+        this.closeBtn.addEventListener('click', () => this.closeModal());
+        this.prevBtn.addEventListener('click', () => this.changeImage(-1));
+        this.nextBtn.addEventListener('click', () => this.changeImage(1));
         
         this.init();
     }
@@ -54380,16 +54390,18 @@ class InfiniteGallery {
     }
 
     openModal(imgElement) {
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modal-img');
-        modal.style.display = 'block';
-        modalImg.src = imgElement.src;
+        this.modal.style.display = 'block';
+        this.modalImg.src = imgElement.src;
         this.currentImageIndex = Array.from(this.images).indexOf(imgElement);
         this.stopAutoScroll();
+        
+        // Show navigation buttons
+        this.prevBtn.style.display = 'block';
+        this.nextBtn.style.display = 'block';
     }
 
     closeModal() {
-        document.getElementById('modal').style.display = 'none';
+        this.modal.style.display = 'none';
         this.startAutoScroll();
     }
 
@@ -54397,30 +54409,35 @@ class InfiniteGallery {
         this.currentImageIndex += direction;
         if (this.currentImageIndex >= this.images.length) this.currentImageIndex = 0;
         if (this.currentImageIndex < 0) this.currentImageIndex = this.images.length - 1;
-        document.getElementById('modal-img').src = this.images[this.currentImageIndex].src;
+        this.modalImg.src = this.images[this.currentImageIndex].src;
     }
 
     handleKeyPress(event) {
-        if (event.key === 'Escape') this.closeModal();
-        if (event.key === 'ArrowLeft') this.changeImage(-1);
-        if (event.key === 'ArrowRight') this.changeImage(1);
+        if (this.modal.style.display === 'block') {
+            if (event.key === 'Escape') this.closeModal();
+            if (event.key === 'ArrowLeft') this.changeImage(-1);
+            if (event.key === 'ArrowRight') this.changeImage(1);
+        }
     }
 }
 
+// Store gallery instance globally
+let gallery;
+
 // Initialize gallery on page load
 window.addEventListener('load', () => {
-    const gallery = new InfiniteGallery();
+    gallery = new InfiniteGallery();
 });
 </script>
 
 <!-- Modal HTML -->
 <div id="modal" class="modal">
-    <span class="close" onclick="gallery.closeModal()">&times;</span>
-    <button class="modal-nav prev" onclick="gallery.changeImage(-1)">❮</button>
+    <span class="close">&times;</span>
+    <button class="modal-nav prev">❮</button>
     <img id="modal-img" src="" alt="Modal Image">
-    <button class="modal-nav next" onclick="gallery.changeImage(1)">❯</button>
+    <button class="modal-nav next">❯</button>
 </div>
-                                
+
 <section id="comp-lnxkyemx" tabindex="-1" data-block-level-container="Section" class="xuzjBY comp-lnxkyemx wixui-section" data-testid="section-container">
     <div id="bgLayers_comp-lnxkyemx" data-hook="bgLayers" data-motion-part="BG_LAYER" class="MW5IWV">
         <div data-testid="colorUnderlay" class="LWbAav Kv1aVt"></div>
