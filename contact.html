@@ -38237,6 +38237,9 @@
                                     <option value="Corporate Event">Corporate Event</option>
                                     <option value="Birthday Party">Birthday Party</option>
                                     <option value="Baby Showers">Baby Showers</option>
+                                    <option value="Engagement">Engagement</option>
+                                    <option value="Haldi">Haldi</option>
+                                    <option value="Sangget">Sangeet</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
@@ -38779,30 +38782,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Phone number formatting
     function formatPhoneNumber(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 0) {
-            value = '(' + value;
-            if (value.length > 3) {
-                value = value.slice(0, 4) + ') ' + value.slice(4);
-            }
-            if (value.length > 9) {
-                value = value.slice(0, 9) + '-' + value.slice(9);
-            }
-            if (value.length > 14) {
-                value = value.slice(0, 14);
-            }
-        }
-        input.value = value;
+    // Remove all non-digit characters
+    let value = input.value.replace(/\D/g, '');
+    
+    // Handle the +91 prefix
+    if (value.startsWith('91')) {
+        value = value.slice(2);
     }
+    
+    // Ensure maximum length of 10 digits
+    if (value.length > 10) {
+        value = value.slice(0, 10);
+    }
+    
+    // Format: +91 XXXXX XXXXX
+    if (value.length > 0) {
+        value = '+91 ' + value;
+        if (value.length > 9) { // After +91 and space
+            value = value.slice(0, 9) + ' ' + value.slice(9, 14); // Allow full 10 digits
+        }
+    }
+    
+    input.value = value;
+}
 
-    // Add phone formatting to phone inputs
-    document.querySelectorAll('input[type="tel"]').forEach(input => {
-        input.addEventListener('input', function() {
-            formatPhoneNumber(this);
-        });
+// Add phone formatting to phone inputs
+document.querySelectorAll('input[type="tel"]').forEach(input => {
+    input.setAttribute('maxlength', '15'); // Increased to 15 to allow full number: +91 + space + 10 digits + 1 space
+    input.setAttribute('placeholder', '+91 XXXXX XXXXX');
+    
+    input.addEventListener('input', function() {
+        formatPhoneNumber(this);
     });
+});
 
     // Initialize Google Places Autocomplete
     function initPlacesAutocomplete() {
@@ -39355,9 +39368,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
 
 
+                              
                                 <div id="comp-lnyc60w4" class="comp-lnyc60w4 S6Dcte comp-lnyc60w4-container"
                                     slots="[object Object]">
-                                    <section id="comp-lnyc60w4_r_comp-lnr3x65k" tabindex=""
+                                    <section id="comp-lnyc60w4_r_comp-lnr3x65k" tabindex="-1"
                                         data-block-level-container="Section"
                                         class="xuzjBY comp-lnyc60w4_r_comp-lnr3x65k wixui-section"
                                         data-testid="section-container">
@@ -39391,65 +39405,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <style>
-/* Center the main container */
-#comp-lnyc60w4_r_comp-lnr3x65s {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding: 40px 0 !important; /* Add some vertical spacing */
-}
-
-/* Center the text container */
-#comp-lnyc60w4_r_comp-lnr3x65u1 {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    max-width: 800px !important; /* Limit the width */
-    margin: 0 auto !important;
-}
-
-/* Center the "SAY HI TO YOUR PLANNER" text */
-#comp-lnyc60w4_r_comp-lnr3x65w {
-    text-align: center !important;
-    width: 100% !important;
-    margin-bottom: 20px !important; /* Add space between title and subtitle */
-}
-
-/* Center the "ENJOY OUR MOMENTS TOGETHER" text */
-#comp-lnyc60w4_r_comp-lnr3x6601 {
-    text-align: center !important;
-    width: 100% !important;
-    margin-bottom: 40px !important; /* Add space before the form */
-}
-
-/* Ensure the spans inside are also centered */
-.wixui-rich-text__text {
-    text-align: center !important;
-    display: block !important;
-}
-
-/* Center the form section */
-.comp-lnyc60w4_r_comp-lnr3x65k-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-
-/* Additional centering for the heading */
-.font_0.wixui-rich-text__text {
-    text-align: center !important;
-    width: 100% !important;
-}
-</style>
                                             <div id="comp-lnyc60w4_r_comp-lnr3x6622" role=""
                                                 class="rM7ckN YJEKQk comp-lnyc60w4_r_comp-lnr3x6622 wixui-box">
                                                 <div class="YAf4Ti InKIFF wixui-box"></div>
@@ -39815,40 +39770,6 @@ City
                                     </section>
                                 </div>
                                 </main>
-                                <style>
-/* Reduce space between heading and form */
-#comp-lnyc60w4_r_comp-lnr3x65u1 {
-    margin-bottom: 10px !important; /* Reduce bottom margin of heading container */
-}
-
-/* Adjust form container spacing */
-#comp-lnyc60w4_r_comp-lnr3x6622 {
-    margin-top: 55 !important; /* Remove top margin of form container */
-}
-
-/* Reduce overall section padding */
-.comp-lnyc60w4_r_comp-lnr3x65k-container {
-    padding-top: 20px !important;
-    padding-bottom: 20px !important;
-}
-
-/* Adjust heading text margins */
-.wixui-rich-text__text {
-    margin-bottom: 5px !important;
-}
-
-/* Reduce form wrapper padding */
-.skymIZO[data-hook="Form-wrapper"] {
-    padding-top: 10px !important;
-}
-
-/* Adjust grid spacing */
-.AxNTep {
-    gap: 20px !important; /* Reduce gap between form elements */
-}
-</style>
-                                
-
                                 <footer id="comp-lnrmp8ga" class="comp-lnrmp8ga S6Dcte comp-lnrmp8ga-container"
                                     slots="[object Object]">
                                     <section id="comp-lnrmp8ga_r_comp-lnrmp7er" tabindex="-1"
@@ -39877,18 +39798,18 @@ City
                                                             }
                                                         </style>
                                                         <picture data-testId="pictureElement" class="" style="display: block;">
-    <source sizes="300px" 
+    <source sizes="200px" 
         srcSet="media/DD Logo/DreamDecorsFinalLogoBlack.png"
-        media="(max-width: 1920px)" height="150" width="300" 
+        media="(max-width: 1920px)" height="150" width="200" 
         style="transform: scale(1.5);" /> 
     <img loading="lazy"
         src="media/DD Logo/DreamDecorsFinalLogoWhite.png"
-        alt="Dream Decors Logo" height="150" width="300" 
+        alt="Dream Decors Logo" height="130" width="280" 
         style="--responsive-img-object-fit: contain; 
                transform: scale(1.5);
                transition: transform 0.3s ease;
                display: block;
-               margin: auto;" />
+               margin-top : -20px;" />
 </picture>
                                                     </div>
                                                     <div id="comp-lnrmp8ga_r_comp-loem0u9a"
@@ -39955,11 +39876,7 @@ City
                                                                                 class="xfxJ27 wixui-vertical-menu__item-label">About</a></span>
                                                                     </div>
                                                                 </li>
-                                                                <li dat
-                                                                
-                                                                
-                                                                
-                                                                a-testid="comp-lnrmp8ga_r_comp-lnr49fwt4-2"
+                                                                <li data-testid="comp-lnrmp8ga_r_comp-lnr49fwt4-2"
                                                                     class="u4cNtA YLBS9j wixui-vertical-menu__item">
                                                                     <div data-testid="itemWrapper" class="fEGEM_"><span
                                                                             data-testid="linkWrapper" class="kGvnrc"><a
@@ -40006,7 +39923,7 @@ City
                                                             class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lnrmp8ga_r_comp-lnr49fxn wixui-rich-text"
                                                             data-testid="richTextElement">
                                                             <p class="font_8 wixui-rich-text__text"><a
-                                                                    href="termsandconditions" target="_self"
+                                                                    href="termsandconditions.html" target="_self"
                                                                     class="wixui-rich-text__text">Terms &amp;
                                                                     Conditions</a></p>
                                                         </div>
@@ -40179,7 +40096,7 @@ City
                                                                                     data-testid="linkWrapper"
                                                                                     class="kGvnrc"><a
                                                                                         data-testid="linkElement"
-                                                                                        href="/" target="_self"
+                                                                                        href="index.html" target="_self"
                                                                                         class="xfxJ27 wixui-vertical-menu__item-label"><b>Home</b></a></span>
                                                                             </div>
                                                                         </li>
@@ -40191,7 +40108,7 @@ City
                                                                                     class="kGvnrc"><a
                                                                                         data-testid="linkElement"
                                                                                         data-anchor="anchors-lnxl7hqo"
-                                                                                        href="about" target="_self"
+                                                                                        href="index.html" target="_self"
                                                                                         class="xfxJ27 wixui-vertical-menu__item-label">About</a></span>
                                                                             </div>
                                                                         </li>
@@ -40202,7 +40119,7 @@ City
                                                                                     data-testid="linkWrapper"
                                                                                     class="kGvnrc"><a
                                                                                         data-testid="linkElement"
-                                                                                        href="services"
+                                                                                        href="category/all-products.html"
                                                                                         target="_self"
                                                                                         class="xfxJ27 wixui-vertical-menu__item-label">Services</a></span>
                                                                             </div>
@@ -40215,7 +40132,7 @@ City
                                                                                     class="kGvnrc"><a
                                                                                         data-testid="linkElement"
                                                                                         data-anchor="anchors-lnsy536h"
-                                                                                        href="contact" target="_self"
+                                                                                        href="index.html" target="_self"
                                                                                         class="xfxJ27 wixui-vertical-menu__item-label">Contact</a></span>
                                                                             </div>
                                                                         </li>

@@ -125,7 +125,7 @@ function showSlide(n) {
         if (autoSlideTimeout) {
             clearTimeout(autoSlideTimeout);
         }
-        autoSlideTimeout = setTimeout(autoSlide, 2000); // Changed to 2 seconds
+        autoSlideTimeout = setTimeout(autoSlide, 4000); // Changed to 2 seconds
     }, 50);
 }
 
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Start automatic slideshow with 2 second interval
-    autoSlideTimeout = setTimeout(autoSlide, 2000);
+    autoSlideTimeout = setTimeout(autoSlide, 4000);
 });
 </script> 
 
@@ -2962,7 +2962,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .MW5IWV .Kv1aVt {
             height: 100%;
             position: absolute;
-            top: 0;
+            top: 30px;
             width: 100%
         }
 
@@ -46542,6 +46542,9 @@ s
                                     <option value="Corporate Event">Corporate Event</option>
                                     <option value="Birthday Party">Birthday Party</option>
                                     <option value="Baby Showers">Baby Showers</option>
+                                    <option value="Engagement">Engagement</option>
+                                    <option value="Haldi">Haldi</option>
+                                    <option value="Sangget">Sangeet</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
@@ -47084,31 +47087,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Phone number formatting
-    function formatPhoneNumber(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value.length > 0) {
-            value = '(' + value;
-            if (value.length > 3) {
-                value = value.slice(0, 4) + ') ' + value.slice(4);
-            }
-            if (value.length > 9) {
-                value = value.slice(0, 9) + '-' + value.slice(9);
-            }
-            if (value.length > 14) {
-                value = value.slice(0, 14);
-            }
-        }
-        input.value = value;
+  // Phone number formatting for Indian numbers
+function formatPhoneNumber(input) {
+    // Remove all non-digit characters
+    let value = input.value.replace(/\D/g, '');
+    
+    // Handle the +91 prefix
+    if (value.startsWith('91')) {
+        value = value.slice(2);
     }
+    
+    // Ensure maximum length of 10 digits
+    if (value.length > 10) {
+        value = value.slice(0, 10);
+    }
+    
+    // Format: +91 XXXXX XXXXX
+    if (value.length > 0) {
+        value = '+91 ' + value;
+        if (value.length > 9) { // After +91 and space
+            value = value.slice(0, 9) + ' ' + value.slice(9, 14); // Allow full 10 digits
+        }
+    }
+    
+    input.value = value;
+}
 
-    // Add phone formatting to phone inputs
-    document.querySelectorAll('input[type="tel"]').forEach(input => {
-        input.addEventListener('input', function() {
-            formatPhoneNumber(this);
-        });
+// Add phone formatting to phone inputs
+document.querySelectorAll('input[type="tel"]').forEach(input => {
+    input.setAttribute('maxlength', '15'); // Increased to 15 to allow full number: +91 + space + 10 digits + 1 space
+    input.setAttribute('placeholder', '+91 XXXXX XXXXX');
+    
+    input.addEventListener('input', function() {
+        formatPhoneNumber(this);
     });
-
+});
     // Initialize Google Places Autocomplete
     function initPlacesAutocomplete() {
         const autocomplete = new google.maps.places.Autocomplete(locationInput, {
@@ -53687,6 +53700,21 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
                     </div>
                 </div>
             </div>
+            <!-- Testimonial 4 -->
+            <div class="testimonial-slide">
+                <div class="testimonial-content">
+                    <div class="testimonial-text-container">
+                        <h2 class="testimonial-author">Naveen Chellaiah </h2>
+                        <p class="testimonial-location">FROM INDIA</p>
+                        <div class="testimonial-message">
+                            <p>"The decor for the birthday party was beautiful! Everything looked great and really added to the fun atmosphere. The colors and details were perfect for the occasion. It was clear a lot of thought went into it, and it made the day even more special.🌟</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-image">
+                        <img src="media/Part 4 Testimonials/Testimonial Images/Testimony 4 (Naveen 1).png" alt="Ilakiya's Wedding">
+                    </div>
+                </div>
+            </div>
 
             <!-- Testimonial 3 -->
             <div class="testimonial-slide">
@@ -53753,7 +53781,7 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
     display: flex;
     gap: 30px;
     justify-content: flex-start;
-    margin-top: 40px;
+    margin-top: 20px !important; /* Reduced from 70px to 20px */
     padding-left: 40px;
     margin-bottom: 20px;
 }
@@ -53792,7 +53820,7 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
     justify-content: space-between;
     align-items: flex-start;
     gap: 60px;
-    padding: 40px;
+    padding: 60px 60px 30px 60px !important; /* Reduced bottom padding */
 }
 
 .testimonial-text-container {
@@ -53941,7 +53969,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <section id="comp-lnqzzitz" tabindex="-1" class="xuzjBY comp-lnqzzitz wixui-section">
     <div data-testid="responsive-container-content" class="comp-lnqzzitz-container">
-        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 50px;"> EXPERIENCES CAPTURED</h2>
+        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 20px; margin-top: 15px;"> EXPERIENCES CAPTURED</h2>
         
         <div class="gallery-container">
             <div class="gallery-scroll">
@@ -54402,7 +54430,7 @@ window.addEventListener('load', () => {
             <div id="bgMedia_comp-lnxkyemx" data-motion-part="BG_MEDIA" class="VgO9Yg"></div>
         </div>
         
-        <div data-testid="responsive-container-content" class="comp-lnxkyemx-container">
+        <div data-testid="responsive-container-content" class="comp-lnxkyemx-container" style="margin-bottom: 20px;">
             <div id="comp-lnxkyen5" role="" class="rM7ckN YJEKQk comp-lnxkyen5 wixui-box">
                 <div class="YAf4Ti InKIFF wixui-box"></div>
                 <div data-testid="responsive-container-content" class="comp-lnxkyen5-container">
@@ -54561,6 +54589,8 @@ seamless experience. At Dream Decor, we’re here to make your special day truly
 
                                 <div id="comp-lnyc60w4" class="comp-lnyc60w4 S6Dcte comp-lnyc60w4-container"
                                     slots="[object Object]">
+
+                                    
                                     <section id="comp-lnyc60w4_r_comp-lnr3x65k" tabindex="-1"
                                         data-block-level-container="Section"
                                         class="xuzjBY comp-lnyc60w4_r_comp-lnr3x65k wixui-section"
@@ -54613,6 +54643,7 @@ seamless experience. At Dream Decor, we’re here to make your special day truly
                                                                             <form aria-label="My Form"
                                                                                 id="form-c457617b-13d3-42a3-bd7b-708878f0f5fd"
                                                                                 data-hook="form-c457617b-13d3-42a3-bd7b-708878f0f5fd"
+                                                                                onsubmit="handleform2Submit(event)" 
                                                                                 class="">
                                                                                 <fieldset>
                                                                                     <div data-hook="form-root">
@@ -54958,6 +54989,41 @@ seamless experience. At Dream Decor, we’re here to make your special day truly
                                             </div>
                                         </div>
                                     </section>
+
+                                    <script>
+async function handleform2Submit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData();
+    
+    // Get all input values
+    formData.append('firstName', form.querySelector('[data-hook="form-field-first_name_9dd3"] input').value);
+    formData.append('email', form.querySelector('[data-hook="form-field-email_35dd"] input').value);
+    formData.append('contactNumber', form.querySelector('[data-hook="form-field-phone_6b4a"] input').value);
+    formData.append('additionalDetails', form.querySelector('[data-hook="form-field-short_answer_797e"] input').value);
+
+    try {
+        const response = await fetch('form2.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(result.message);
+            form.reset();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the form');
+    }
+}
+</script>
+
                                 </div>
                                 </main>
 
