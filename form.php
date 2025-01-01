@@ -65,8 +65,28 @@ try {
     }
 
     // Email configuration
-    $to = "sarathyadav112@gmail.com"; // Replace with your email
-    $subject = "New Event Booking Request from {$formData['firstName']} {$formData['lastName']}";
+    $to_emails = [
+        "hello@desidreamdecors.com",
+        "ddecors2022@gmail.com"
+    ]; // Add all recipient emails here
+
+    // Add function to save booking data to file
+    function saveBookingData($formData) {
+        $bookingsDir = 'bookings/';
+        if (!file_exists($bookingsDir)) {
+            mkdir($bookingsDir, 0777, true);
+        }
+        
+        $timestamp = date('Y-m-d_H-i-s');
+        $filename = $bookingsDir . "booking_{$timestamp}.txt";
+        
+        $content = "Booking Details:\n";
+        foreach ($formData as $key => $value) {
+            $content .= "{$key}: {$value}\n";
+        }
+        
+        return file_put_contents($filename, $content);
+    }
 
     // Create email content
     $emailContent = "
@@ -154,39 +174,40 @@ try {
         }
     }
 
-    // Before sending email, verify SMTP settings
+    // Modify the email sending section
     try {
-        $mail = new PHPMailer(true);
-        $mail->SMTPDebug = 2; // Enable verbose debug output
-        $mail->Debugoutput = function($str, $level) {
-            error_log("PHPMailer debug: $str");
-        };
-        
-        // Replace the mail() calls with sendEmail()
-        if(sendEmail($to, $subject, $emailContent, $formData['email'])) {
-            // Send confirmation email to customer using the same verified sender
-            $customerSubject = "Thank you for your booking request - Dream Decors";
-            $customerContent = "
-            <html>
-            <body>
-                <h2>Thank you for your booking request!</h2>
-                <p>Dear {$formData['firstName']},</p>
-                <p>We have received your event booking request and will get back to you shortly.</p>
-                <p>Your booking details:</p>
-                <ul>
-                    <li>Event Type: {$formData['eventType']}</li>
-                    <li>Event Date: {$formData['eventDate']}</li>
-                    <li>Location: {$formData['location']}</li>
-                </ul>
-                <p>Best regards,<br>Dream Decors Team</p>
-            </body>
-            </html>
-            ";
-            
-            sendEmail($formData['email'], $customerSubject, $customerContent, 'info@dreamdecors.com');
-        } else {
-            throw new Exception("Failed to send email");
+        // Save booking data first
+        if (!saveBookingData($formData)) {
+            throw new Exception("Failed to save booking data");
         }
+        
+        // Send email to all recipients
+        foreach ($to_emails as $to) {
+            if(!sendEmail($to, $subject, $emailContent, $formData['email'])) {
+                error_log("Failed to send email to: $to");
+            }
+        }
+
+        // Send confirmation email to customer
+        $customerSubject = "Thank you for your booking request - Dream Decors";
+        $customerContent = "
+        <html>
+        <body>
+            <h2>Thank you for your booking request!</h2>
+            <p>Dear {$formData['firstName']},</p>
+            <p>We have received your event booking request and will get back to you shortly.</p>
+            <p>Your booking details:</p>
+            <ul>
+                <li>Event Type: {$formData['eventType']}</li>
+                <li>Event Date: {$formData['eventDate']}</li>
+                <li>Location: {$formData['location']}</li>
+            </ul>
+            <p>Best regards,<br>Dream Decors Team</p>
+        </body>
+        </html>
+        ";
+        
+        sendEmail($formData['email'], $customerSubject, $customerContent, 'info@dreamdecors.com');
 
     } catch (Exception $e) {
         error_log("PHPMailer Error: " . $e->getMessage());
