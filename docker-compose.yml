@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: babuthehacker/dreamdecors:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./uploads:/var/www/html/uploads
+    environment:
+      - SMTP_HOST=mail.smtp2go.com
+      - SMTP_PORT=2525
+      - SMTP_USER=imcourageous.com
+      - SMTP_PASSWORD=ep1XvG9sVMo00jdz
+    restart: unless-stopped
+
+volumes:
+  uploads: 
