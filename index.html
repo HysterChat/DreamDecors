@@ -45699,7 +45699,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Auto-slide every 5 seconds
-    let autoSlide = setInterval(() => showSlide(currentSlide + 1), 5000);
+    let autoSlide = setInterval(() => showSlide(currentSlide + 1), 3000);
 
     // Pause auto-slide on hover
     const container = document.querySelector('.testimonials-container');
@@ -45708,7 +45708,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     container.addEventListener('mouseleave', () => {
-        autoSlide = setInterval(() => showSlide(currentSlide + 1), 5000);
+        autoSlide = setInterval(() => showSlide(currentSlide + 1), 3000);
     });
 });
 </script>
