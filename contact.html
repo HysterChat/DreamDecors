@@ -39020,11 +39020,12 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     
     <!-- Logo and Tagline Container -->
     <div class="logo-tagline-container">
-        <div class="logo-container">
-            <img src="media/DD Logo/DreamDecorsFinalLogotrans.png" 
-                 alt="Dream Decors" 
-                 class="logo-image" />
-        </div>
+        <a href="/">
+        <img src="media/DD Logo/DreamDecorsFinalLogotrans.png" 
+             alt="Dream Decors" 
+             class="logo-image" />
+    </a>
+</div>
         <div class="tagline">
             <h6 class="tagline-text">ELEGANCE AT IT'S BEST</h6>
         </div>
@@ -39043,6 +39044,8 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     z-index: 10;
     height: 150px; /* Further reduced height */
     margin-top: -50px; /* Increased negative margin to move up more */
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
 .logo-container {

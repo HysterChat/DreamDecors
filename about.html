@@ -47920,10 +47920,12 @@ window.addEventListener('scroll', function() {
     <!-- Logo and Tagline Container -->
     <div class="logo-tagline-container">
         <div class="logo-container">
-            <img src="media/DD Logo/DreamDecorsFinalLogotrans.png" 
-                 alt="Dream Decors" 
-                 class="logo-image" />
-        </div>
+    <a href="/">
+        <img src="media/DD Logo/DreamDecorsFinalLogotrans.png" 
+             alt="Dream Decors" 
+             class="logo-image" />
+    </a>
+</div>
         <div class="tagline">
             <h6 class="tagline-text">ELEGANCE AT IT'S BEST</h6>
         </div>
@@ -47942,12 +47944,20 @@ window.addEventListener('scroll', function() {
     z-index: 10;
     height: 150px; /* Further reduced height */
     margin-top: -50px; /* Increased negative margin to move up more */
+    cursor: pointer;
+    transition: transform 0.3s ease;
 }
+
 
 .logo-container {
     width: 100px; /* Even smaller logo */
     height: 100px; /* Even smaller logo */
     margin-bottom: 6px; /* Reduced spacing */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.logo-container a:hover {
+    transform: scale(1.05);
 }
 
 .logo-image {
@@ -47964,7 +47974,7 @@ window.addEventListener('scroll', function() {
 .tagline-text {
     font-family: 'Jassime', sans-serif;
     font-size: 12px; /* Smaller font size */
-    color: white;
+    color: #BF965F;
     margin: 0;
     font-weight: 700;
     margin-bottom: -10px;
