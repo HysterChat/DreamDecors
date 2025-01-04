@@ -2,7 +2,6 @@
 // Add PHPMailer classes at the very top
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
 
 // Require the Composer autoloader
 require 'vendor/autoload.php';
@@ -19,7 +18,7 @@ ob_start();
 // Set JSON header
 header('Content-Type: application/json');
 
-// Add near the top of form.php
+// Check for file upload errors
 if (isset($_FILES['referenceDesign']) && $_FILES['referenceDesign']['error'] !== UPLOAD_ERR_OK) {
     error_log('File upload error: ' . $_FILES['referenceDesign']['error']);
 }
@@ -37,6 +36,7 @@ try {
 
     // Debug: Log received data
     error_log('POST data received: ' . print_r($_POST, true));
+    error_log('Uploaded Files: ' . print_r($_FILES, true));
 
     // Get form data
     $formData = [
@@ -64,11 +64,14 @@ try {
         }
     }
 
-    // Email configuration
+    // Email subject
+    $subject = "New Event Booking Request";
+
+    // Email recipients
     $to_emails = [
         "hello@desidreamdecors.com",
         "ddecors2022@gmail.com"
-    ]; // Add all recipient emails here
+    ];
 
     // Add function to save booking data to file
     function saveBookingData($formData) {
@@ -76,15 +79,15 @@ try {
         if (!file_exists($bookingsDir)) {
             mkdir($bookingsDir, 0777, true);
         }
-        
+
         $timestamp = date('Y-m-d_H-i-s');
         $filename = $bookingsDir . "booking_{$timestamp}.txt";
-        
+
         $content = "Booking Details:\n";
         foreach ($formData as $key => $value) {
             $content .= "{$key}: {$value}\n";
         }
-        
+
         return file_put_contents($filename, $content);
     }
 
@@ -100,7 +103,7 @@ try {
     </head>
     <body>
         <h2>New Event Booking Request</h2>
-        
+
         <div class='details'>
             <p><span class='label'>Name:</span> {$formData['firstName']} {$formData['lastName']}</p>
             <p><span class='label'>Contact:</span> {$formData['contactNumber']}</p>
@@ -130,7 +133,7 @@ try {
     // Replace the email sending code with PHPMailer
     function sendEmail($to, $subject, $content, $from) {
         $mail = new PHPMailer(true);
-        
+
         try {
             // Server settings
             $mail->isSMTP();
@@ -152,10 +155,10 @@ try {
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
                 }
-                
+
                 $fileName = time() . '_' . basename($_FILES['referenceDesign']['name']);
                 $targetPath = $uploadDir . $fileName;
-                
+
                 if (move_uploaded_file($_FILES['referenceDesign']['tmp_name'], $targetPath)) {
                     $mail->addAttachment($targetPath, basename($_FILES['referenceDesign']['name']));
                     // Add file information to email content
@@ -174,49 +177,42 @@ try {
         }
     }
 
-    // Modify the email sending section
-    try {
-        // Save booking data first
-        if (!saveBookingData($formData)) {
-            throw new Exception("Failed to save booking data");
-        }
-        
-        // Send email to all recipients
-        foreach ($to_emails as $to) {
-            if(!sendEmail($to, $subject, $emailContent, $formData['email'])) {
-                error_log("Failed to send email to: $to");
-            }
-        }
-
-        // Send confirmation email to customer
-        $customerSubject = "Thank you for your booking request - Dream Decors";
-        $customerContent = "
-        <html>
-        <body>
-            <h2>Thank you for your booking request!</h2>
-            <p>Dear {$formData['firstName']},</p>
-            <p>We have received your event booking request and will get back to you shortly.</p>
-            <p>Your booking details:</p>
-            <ul>
-                <li>Event Type: {$formData['eventType']}</li>
-                <li>Event Date: {$formData['eventDate']}</li>
-                <li>Location: {$formData['location']}</li>
-            </ul>
-            <p>Best regards,<br>Dream Decors Team</p>
-        </body>
-        </html>
-        ";
-        
-        sendEmail($formData['email'], $customerSubject, $customerContent, 'info@dreamdecors.com');
-
-    } catch (Exception $e) {
-        error_log("PHPMailer Error: " . $e->getMessage());
-        throw new Exception("Email configuration error: " . $e->getMessage());
+    // Save booking data first
+    if (!saveBookingData($formData)) {
+        throw new Exception("Failed to save booking data");
     }
+
+    // Send email to all recipients
+    foreach ($to_emails as $to) {
+        if (!sendEmail($to, $subject, $emailContent, $formData['email'])) {
+            error_log("Failed to send email to: $to");
+        }
+    }
+
+    // Send confirmation email to customer
+    $customerSubject = "Thank you for your booking request - Dream Decors";
+    $customerContent = "
+    <html>
+    <body>
+        <h2>Thank you for your booking request!</h2>
+        <p>Dear {$formData['firstName']},</p>
+        <p>We have received your event booking request and will get back to you shortly.</p>
+        <p>Your booking details:</p>
+        <ul>
+            <li>Event Type: {$formData['eventType']}</li>
+            <li>Event Date: {$formData['eventDate']}</li>
+            <li>Location: {$formData['location']}</li>
+        </ul>
+        <p>Best regards,<br>Dream Decors Team</p>
+    </body>
+    </html>
+    ";
+
+    sendEmail($formData['email'], $customerSubject, $customerContent, 'info@dreamdecors.com');
 
     // Ensure clean output before JSON response
     ob_clean();
-    
+
     echo json_encode([
         'status' => 'success',
         'message' => 'Thank you for your booking request! We will contact you soon.'
@@ -225,10 +221,10 @@ try {
 } catch (Exception $e) {
     // Log the error
     error_log("Form Error: " . $e->getMessage());
-    
+
     // Clean output buffer
     ob_clean();
-    
+
     // Send error response
     http_response_code(500);
     echo json_encode([
@@ -239,4 +235,4 @@ try {
 
 // Flush and end output
 ob_end_flush();
-exit; 
+exit;
