@@ -2206,12 +2206,26 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
                 <!-- Contact Numbers -->
                 <div class="form-line">
                     <label class="form-label">Contact Number*</label>
-                    <input type="tel" name="contactNumber" class="form-textbox" required placeholder="(+91) 000000000"/>
+                    <input type="tel" 
+                           name="contactNumber" 
+                           class="form-textbox" 
+                           required 
+                           pattern="[0-9]{10}"
+                           maxlength="10"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           placeholder="10 digit mobile number"/>
                 </div>
 
                 <div class="form-line">
                     <label class="form-label">Alternate Contact Number*</label>
-                    <input type="tel" name="altContactNumber" class="form-textbox" required placeholder="(+91) 000000000"/>
+                    <input type="tel" 
+                           name="altContactNumber" 
+                           class="form-textbox" 
+                           required
+                           pattern="[0-9]{10}"
+                           maxlength="10" 
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           placeholder="10 digit mobile number"/>
                 </div>
 
                 <!-- Email -->
@@ -2486,6 +2500,33 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
 .error + .error-message {
     display: block;
 }
+.form-submit-button.loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .form-submit-button.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s linear infinite;
+        }
+
+        @keyframes button-loading-spinner {
+            from {
+                transform: rotate(0turn);
+            }
+            to {
+                transform: rotate(1turn);
+            }
+        }
 
 /* Placeholder styling */
 ::placeholder {
@@ -2523,136 +2564,108 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
 </style>
 
     <script>
-       // Form submission handling
-if(form) {
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        const submitButton = event.target.querySelector('.form-submit-button');
-        submitButton.disabled = true;
-        submitButton.textContent = 'Submitting...';
-        
-        try {
-            const formData = new FormData(this);
+     // Add this right after your existing form validation code
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('eventForm');
+
+    if(form) {
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
             
-            // Validate required fields
-            const requiredFields = form.querySelectorAll('[required]');
-            let isValid = true;
+            const submitButton = form.querySelector('.form-submit-button');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
             
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    isValid = false;
-                } else {
-                    field.classList.remove('error');
-                }
-            });
-
-            if (!isValid) {
-                throw new Error('Please fill in all required fields');
-            }
-
-            // Validate phone numbers
-            const phoneInputs = form.querySelectorAll('input[type="tel"]');
-            phoneInputs.forEach(input => {
-                const phoneNumber = input.value.replace(/\D/g, '');
-                if (phoneNumber.length !== 10) {
-                    input.classList.add('error');
-                    isValid = false;
-                }
-            });
-
-            if (!isValid) {
-                throw new Error('Please enter valid phone numbers');
-            }
-
-            // Validate email
-            const emailInput = form.querySelector('input[type="email"]');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput.value)) {
-                emailInput.classList.add('error');
-                throw new Error('Please enter a valid email address');
-            }
-
-            // Send form data
-            const response = await fetch('form.php', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            let data;
             try {
-                data = await response.json();
-            } catch (e) {
-                console.error('Response parsing error:', e);
-                throw new Error('Invalid response from server');
-            }
+                // Create FormData object
+                const formData = new FormData(form);
+                
+                // Validate form before submission
+                if (!validateForm(form)) {
+                    throw new Error('Please fill in all required fields correctly');
+                }
 
-            if (data.status === 'success') {
-                // Show success message
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Your booking request has been submitted successfully. We will contact you soon!',
-                    icon: 'success',
-                    confirmButtonColor: '#c18634'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.reset();
-                        window.location.href = 'thank-you.html'; // Redirect to thank you page
-                    }
+                // Send the form data
+                const response = await fetch('form.php', {
+                    method: 'POST',
+                    body: formData // FormData handles file uploads automatically
                 });
-            } else {
-                throw new Error(data.message || 'Form submission failed');
-            }
 
-        } catch (error) {
-            console.error('Error:', error);
-            
-            // Show error message
-            Swal.fire({
-                title: 'Error!',
-                text: error.message || 'Something went wrong. Please try again.',
-                icon: 'error',
-                confirmButtonColor: '#c18634'
-            });
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Submit';
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // Show success message using SweetAlert2
+                    await Swal.fire({
+                        title: 'Success!',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonColor: '#c18634'
+                    });
+
+                    // Reset form and redirect
+                    form.reset();
+                    window.location.href = '/';
+                    
+                } else {
+                    throw new Error(result.message || 'Submission failed');
+                }
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                
+                // Show error message
+                await Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#c18634'
+                });
+            } finally {
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+            }
+        });
+    }
+});
+
+// Form validation function
+function validateForm(form) {
+    let isValid = true;
+    
+    // Clear previous errors
+    form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
+
+    // Validate required fields
+    form.querySelectorAll('[required]').forEach(field => {
+        if (!validateField(field)) {
+            isValid = false;
         }
     });
 
-    // Real-time validation
-    form.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('input', function() {
-            validateField(this);
-        });
-
-        input.addEventListener('blur', function() {
-            validateField(this);
-        });
-    });
+    return isValid;
 }
 
-// Field validation function
+// Individual field validation
 function validateField(field) {
-    if (field.hasAttribute('required')) {
-        if (!field.value.trim()) {
-            field.classList.add('error');
-            return false;
-        }
+    if (!field.value.trim()) {
+        field.classList.add('error');
+        return false;
     }
 
     if (field.type === 'tel') {
-        const phoneNumber = field.value.replace(/\D/g, '');
-        if (phoneNumber.length !== 10) {
-            field.classList.add('error');
-            return false;
-        }
+    const phoneNumber = field.value.replace(/\D/g, '');
+    if (phoneNumber.length !== 10) {
+        field.classList.add('error');
+        // Optionally show a custom error message
+        showError(field, 'Please enter a valid 10-digit phone number');
+        return false;
     }
+}
 
     if (field.type === 'email') {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
