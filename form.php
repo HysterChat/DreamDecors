@@ -70,7 +70,8 @@ try {
     // Email recipients
     $to_emails = [
         "hello@desidreamdecors.com",
-        "ddecors2022@gmail.com"
+        "ddecors2022@gmail.com",
+        "sarathbabuc@duck.com"
     ];
 
     // Add function to save booking data to file
