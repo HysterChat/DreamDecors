@@ -38283,13 +38283,15 @@ document.addEventListener('DOMContentLoaded', function() {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
         backdrop-filter: blur(5px); /* Adds blur effect behind the button */
         -webkit-backdrop-filter: blur(5px);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+
     }
 }
 
 /* Smaller mobile screens */
 @media screen and (max-width: 480px) {
     .book-now-btn {
-        top: -10px !important;
+        top: -1px !important;
         right: -20px !important;
         font-size: 10px;
         padding: 6px 12px !important;
@@ -38693,13 +38695,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('eventForm');
     const locationInput = document.getElementById('locationSearch');
 
-    // Open popup function
-    window.openPopup = function() {
-        popup.classList.add('active');
-        popup.style.display = 'flex';
-        bookNowBtns.forEach(btn => btn.classList.add('hidden'));
-        document.body.style.overflow = 'hidden';
-    };
+    // Modify the openPopup function
+function openPopup() {
+    const popup = document.getElementById('eventPopup');
+    const bookNowBtns = document.querySelectorAll('.book-now-btn, .sidebar-btn');
+    const sliderPanel = document.getElementById('sliderPanel');
+    
+    // Show popup
+    popup.classList.add('active');
+    popup.style.display = 'flex';
+    
+    // Hide all book now buttons
+    bookNowBtns.forEach(btn => {
+        btn.style.opacity = '0';
+        btn.style.visibility = 'hidden';
+    });
+    
+    // Close the slider panel if it's open
+    if (sliderPanel.classList.contains('active')) {
+        toggleSlider();
+    }
+    
+    // Prevent scrolling on body
+    document.body.style.overflow = 'hidden';
+}
+
+// Modify the closePopup function
+function closePopup() {
+    const popup = document.getElementById('eventPopup');
+    const bookNowBtns = document.querySelectorAll('.book-now-btn');
+    
+    // Hide popup
+    popup.classList.remove('active');
+    popup.style.display = 'none';
+    
+    // Show book now buttons (except in mobile view)
+    bookNowBtns.forEach(btn => {
+        if (window.innerWidth > 768 || !btn.classList.contains('sidebar-btn')) {
+            btn.style.opacity = '1';
+            btn.style.visibility = 'visible';
+        }
+    });
+    
+    // Restore scrolling
+    document.body.style.overflow = 'auto';
+}
 
     // Close popup function
     window.closePopup = function() {
@@ -39023,6 +39063,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     .logo-container {
         width: 80px;
         height: 80px;
+
     }
     
     .tagline-text {
@@ -39076,7 +39117,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                 <!-- Add social links to sidebar -->
                 <li class="mobile-only">
                     <div class="sidebar-social">
-                        <a href="javascript:void(0)" class="sidebar-btn" onclick="openPopup()">Book Now</a>                        <div class="sidebar-icons">
+                        <a href="/book-now.html" class="sidebar-btn" >Book Now</a>                        <div class="sidebar-icons">
                             <a href="- https://www.instagram.com/desidream_decors" target="_blank">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -39106,7 +39147,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
 
 .sidebar-btn {
     display: block;
-    background-color: #1A6AFF;
+    background-color: #000000;
     color: white;
     padding: 10px 20px;
     border-radius: 4px;
@@ -39114,6 +39155,8 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     margin-bottom: 20px;
     text-decoration: none;
     font-weight: 500;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .sidebar-icons {
@@ -39196,7 +39239,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                                             }
 
                                             .slider-nav a {
-                                                color: #333;
+                                                color: white;
                                                 text-decoration: none;
                                                 font-size: 18px;
                                                 display: block;
@@ -39228,34 +39271,60 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                                             }
                                             </style>
                                             <script>
-                                            // Add click handler to your SVG button
-                                            document.querySelector('[aria-label="Open site navigation"]').addEventListener('click', toggleSlider);
+// Add click handler to your SVG button
+document.querySelector('[aria-label="Open site navigation"]').addEventListener('click', toggleSlider);
 
-                                            // Create overlay element
-                                            const overlay = document.createElement('div');
-                                            overlay.className = 'slider-overlay';
-                                            document.body.appendChild(overlay);
+// Create overlay element
+const overlay = document.createElement('div');
+overlay.className = 'slider-overlay';
+document.body.appendChild(overlay);
 
-                                            function toggleSlider() {
-                                                const slider = document.getElementById('sliderPanel');
-                                                slider.classList.toggle('active');
-                                                overlay.classList.toggle('active');
-                                            }
+function toggleSlider() {
+    const slider = document.getElementById('sliderPanel');
+    const bookNowBtns = document.querySelectorAll('.book-now-btn');
+    const overlay = document.querySelector('.slider-overlay');
+    
+    slider.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Hide/show all book now buttons
+    bookNowBtns.forEach(btn => {
+        if (slider.classList.contains('active')) {
+            if (!btn.classList.contains('sidebar-btn')) {
+                btn.style.opacity = '0';
+                btn.style.visibility = 'hidden';
+                btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+            }
+        } else {
+            if (!btn.classList.contains('sidebar-btn')) {
+                btn.style.opacity = '1';
+                btn.style.visibility = 'visible';
+                btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+            }
+        }
+    });
+}
 
-                                            // Close slider when clicking overlay
-                                            overlay.addEventListener('click', toggleSlider);
+// Add click handler for sidebar book now button
+document.querySelector('.sidebar-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = '/book-now';
+    toggleSlider(); // Close the slider after clicking
+});
 
-                                            // Close slider when pressing Escape key
-                                            document.addEventListener('keydown', function(e) {
-                                                if (e.key === 'Escape') {
-                                                    const slider = document.getElementById('sliderPanel');
-                                                    if (slider.classList.contains('active')) {
-                                                        toggleSlider();
-                                                    }
-                                                }
-                                            });
-                                            </script>
+// Close slider when clicking overlay
+overlay.addEventListener('click', toggleSlider);
 
+// Close slider when pressing Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const slider = document.getElementById('sliderPanel');
+        if (slider.classList.contains('active')) {
+            toggleSlider();
+        }
+    }
+});
+</script>
                                             
                                             <!-- section 2 -->
 
@@ -39662,8 +39731,8 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                                                                     data-testid="richTextElement">
                                                                     <p class="font_7 wixui-rich-text__text"><a
                                                                             href="birthday" target="_self"
-                                                                            class="wixui-rich-text__text">JOYFUL
-                                                                            CELEBRATIONS</a></p>
+                                                                            class="wixui-rich-text__text">Joyful
+                                                                            Celebrations>
                                                                 </div>
                                                                 <div id="comp-lo1uod2l"
                                                                     class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lo1uod2l wixui-rich-text"
@@ -45318,7 +45387,8 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
                         <h2 class="testimonial-author">Linda</h2>
                         <p class="testimonial-location">FROM INDIA</p>
                         <div class="testimonial-message">
-                            <p>Desi Decor made my wedding a dream come true, and I don't even know where to begin to express my gratitude. From the moment we booked her, she poured her heart into every detail, guiding me with care and patience through the entire planning process. She was always there, listening, communicating, and making sure everything was perfect. On the day of the wedding, she arrived early and transformed the space into something straight out of a fairytale. It was breathtaking—every corner was filled with magic and beauty. Our guests couldn't stop talking about how stunning the decor was, and I'll cherish those moments forever. She didn't just decorate; she brought my vision to life and made our day unforgettable. I would wholeheartedly recommend her to anyone.🌟</p>
+                            <p>
+                                Desi Decor made my wedding a dream come true. From booking to the big day, she poured her heart into every detail, guiding me with care and ensuring everything was perfect. She transformed the venue into a breathtaking fairytale, and our guests couldn’t stop praising the magical decor. She didn’t just decorate; she brought my vision to life and made our day unforgettable. I highly recommend her !   .🌟</p>
                         </div>
                     </div>
                     <div class="testimonial-image">
@@ -45417,7 +45487,8 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
     max-width: 1400px;
     margin: 0 auto;
     position: relative;
-    height: 550px; /* Fixed container height */
+    height: auto; /* Changed from fixed height */
+    padding-bottom: 60px; /* Space for navigation arrows */
 }
 
 .testimonial-slider {
@@ -45469,7 +45540,7 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
 
 .testimonial-slide {
     display: none;
-    height: 600px; /* Fixed height for slides */
+    height: auto; /* Changed from fixed height */
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -45484,6 +45555,14 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
     gap: 60px;
     padding: 0 60px;
     height: 100%;
+    min-height: 500px; /* Minimum height to maintain consistency */
+
+}
+.testimonial-image {
+    flex: 0 0 500px; /* Fixed width */
+    height: 500px; /* Fixed height */
+    position: relative;
+    overflow: hidden; /* Hide overflow */
 }
 
 .testimonial-text-container {
@@ -45577,6 +45656,7 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
         align-items: center;
         padding: 30px;
         gap: 30px;
+        min-height: auto;
     }
 
     .testimonial-text-container {
@@ -45586,10 +45666,12 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
     }
 
     .testimonial-image {
+        flex: 0 0 400px;
         width: 100%;
+        max-width: 500px;
         height: 400px;
-        max-width: none;
     }
+
 
     .testimonial-author {
         font-size: 42px;
@@ -45605,8 +45687,8 @@ document.getElementById('popupVideo').addEventListener('ended', function() {
         justify-content: center;
         padding-left: 0;
     }
-}
 
+}
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .celebrations-section {
@@ -45716,7 +45798,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <section id="comp-lnqzzitz" tabindex="-1" class="xuzjBY comp-lnqzzitz wixui-section">
     <div data-testid="responsive-container-content" class="comp-lnqzzitz-container">
-        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 20px; margin-top: 15px;"> EXPERIENCES CAPTURED</h2>
+        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 20px; margin-top: 50px;"> EXPERIENCES CAPTURED</h2>
         
         <div class="gallery-container">
             <div class="gallery-scroll">
@@ -46182,7 +46264,7 @@ window.addEventListener('load', () => {
     <button class="modal-nav next">❯</button>
 </div>
 
-<section id="comp-lnxkyemx" tabindex="-1" data-block-level-container="Section" class="xuzjBY comp-lnxkyemx wixui-section" data-testid="section-container" style="margin-top: 100px;">
+<section id="comp-lnxkyemx" tabindex="-1" data-block-level-container="Section" class="xuzjBY comp-lnxkyemx wixui-section" data-testid="section-container ">
     <div id="bgLayers_comp-lnxkyemx" data-hook="bgLayers" data-motion-part="BG_LAYER" class="MW5IWV">
         <div data-testid="colorUnderlay" class="LWbAav Kv1aVt"></div>
         <div id="bgMedia_comp-lnxkyemx" data-motion-part="BG_MEDIA" class="VgO9Yg"></div>
@@ -46194,7 +46276,7 @@ window.addEventListener('load', () => {
             <div id="bgMedia_comp-lnxkyemx" data-motion-part="BG_MEDIA" class="VgO9Yg"></div>
         </div>
         
-        <div data-testid="responsive-container-content" class="comp-lnxkyemx-container" style="margin-bottom: 80px;">
+        <div data-testid="responsive-container-content" class="comp-lnxkyemx-container" style="margin-top: -100px;">
             <div id="comp-lnxkyen5" role="" class="rM7ckN YJEKQk comp-lnxkyen5 wixui-box">
                 <div class="YAf4Ti InKIFF wixui-box"></div>
                 <div data-testid="responsive-container-content" class="comp-lnxkyen5-container">
@@ -46237,7 +46319,7 @@ window.addEventListener('load', () => {
                                                 class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lnxl2k6s wixui-rich-text"
                                                 data-testid="richTextElement">
                                                 <h1 class="font_0 wixui-rich-text__text"><span
-                                                        class="wixui-rich-text__text">Blessy Joshua</span></h1>
+                                                        class="wixui-rich-text__text" style="margin-bottom: 10px;">Blessy Joshua</span></h1>
                                             </div>
                                             <div id="comp-lnxl2k6x1"
                                                 class="HcOXKn SxM0TO QxJLC3 lq2cno comp-lnxl2k6x1 wixui-rich-text"
@@ -46726,7 +46808,7 @@ seamless experience. At Dream Decor, we’re here to make your special day truly
                                                                                                             data-mobile="false"
                                                                                                             class="sIUEu8m sb0S1Ax slOkHDx od8zBS6--upgrade od8zBS6--wrapContent sW5rmTK oWwR3zx--upgrade swqxV_G sHAgkRZ"
                                                                                                             aria-live="assertive"
-                                                                                                            type="button"
+                                                                                                            type="submit"
                                                                                                             tabindex="0"
                                                                                                             aria-disabled="false"><span
                                                                                                                 class="sbYeLvR">Submit</span></button>
@@ -46755,39 +46837,110 @@ seamless experience. At Dream Decor, we’re here to make your special day truly
                                     </section>
 
                                     <script>
-async function handleform2Submit(event) {
+                                        async function handleform2Submit(event) {
     event.preventDefault();
     
     const form = event.target;
-    const formData = new FormData();
     
-    // Get all input values
-    formData.append('firstName', form.querySelector('[data-hook="form-field-first_name_9dd3"] input').value);
-    formData.append('email', form.querySelector('[data-hook="form-field-email_35dd"] input').value);
-    formData.append('contactNumber', form.querySelector('[data-hook="form-field-phone_6b4a"] input').value);
-    formData.append('additionalDetails', form.querySelector('[data-hook="form-field-short_answer_797e"] input').value);
-
     try {
-        const response = await fetch('form2.php', {
-            method: 'POST',
-            body: formData
+        // Get all input values
+        const firstName = form.querySelector('[data-hook="form-field-first_name_9dd3"] input').value;
+        const email = form.querySelector('[data-hook="form-field-email_35dd"] input').value;
+        const contactNumber = form.querySelector('[data-hook="form-field-phone_6b4a"] input').value;
+        const city = form.querySelector('[data-hook="form-field-short_answer_cf00"] input').value;
+        const occasion = form.querySelector('[data-hook="form-field-short_answer_8a15"] input').value;
+        const occasionDate = form.querySelector('[data-hook="form-field-short_answer_c38d"] input').value;
+        const message = form.querySelector('[data-hook="form-field-short_answer_797e"] input').value;
+
+        // Validate required fields
+        if (!firstName || !email || !contactNumber || !city || !occasion || !message) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        const submitButton = form.querySelector('button[type="submit"]');
+submitButton.disabled = true;
+
+// Array of fun loading messages
+const loadingMessages = [
+    'Sending... Creating magic moments! ✨',
+    'Sending... Crafting your dream celebration! 🎉',
+    'Sending... Planning something special! 🎊',
+    'Sending... Your dream event is coming to life! 🌟',
+    'Sending... Making memories happen! 💫'
+];
+
+// Pick a random message
+const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+submitButton.innerHTML = randomMessage;
+
+        // Log the request for debugging
+        console.log('Sending form data:', {
+            firstName,
+            email,
+            contactNumber,
+            city,
+            occasion,
+            occasionDate,
+            message
         });
 
-        const result = await response.json();
+        const response = await fetch('form2.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                firstName,
+                email,
+                contactNumber,
+                city,
+                occasion,
+                occasionDate,
+                message
+            })
+        });
+
+
+        // Log the response for debugging
+        console.log('Response status:', response.status);
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error('Invalid JSON response: ' + responseText);
+        }
         
         if (result.status === 'success') {
             alert(result.message);
             form.reset();
         } else {
-            alert('Error: ' + result.message);
+            alert('Error: ' + (result.message || 'Unknown error occurred'));
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while submitting the form');
+        alert('An error occurred while submitting the form: ' + error.message);
+    } finally {
+        // Reset button state
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<span class="sbYeLvR">Submit</span>';
     }
 }
-</script>
 
+// Add event listener to the form
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('form-c457617b-13d3-42a3-bd7b-708878f0f5fd');
+    if (form) {
+        form.addEventListener('submit', handleform2Submit);
+    } else {
+        console.error('Form not found!');
+    }
+});
+</script>
                                 </div>
                                 </main>
 

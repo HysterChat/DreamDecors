@@ -16,6 +16,20 @@ ini_set('error_log', 'error.log');
 // Set JSON header
 header('Content-Type: application/json');
 
+// Add CORS headers for development
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// Require the Composer autoloader
+require 'vendor/autoload.php';
+
 try {
     // Validate request method
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -27,11 +41,14 @@ try {
         'firstName' => $_POST['firstName'] ?? '',
         'email' => $_POST['email'] ?? '',
         'contactNumber' => $_POST['contactNumber'] ?? '',
-        'additionalDetails' => $_POST['additionalDetails'] ?? ''
+        'city' => $_POST['city'] ?? '',
+        'occasion' => $_POST['occasion'] ?? '',
+        'occasionDate' => $_POST['occasionDate'] ?? '',
+        'message' => $_POST['message'] ?? ''
     ];
 
     // Validate required fields
-    $requiredFields = ['firstName', 'email', 'contactNumber'];
+    $requiredFields = ['firstName', 'email', 'contactNumber', 'city', 'occasion', 'message'];
     foreach ($requiredFields as $field) {
         if (empty($formData[$field])) {
             throw new Exception("Missing required field: $field");
@@ -54,7 +71,10 @@ try {
             <p><span class='label'>Name:</span> {$formData['firstName']}</p>
             <p><span class='label'>Email:</span> {$formData['email']}</p>
             <p><span class='label'>Contact:</span> {$formData['contactNumber']}</p>
-            <p><span class='label'>Message:</span> {$formData['additionalDetails']}</p>
+            <p><span class='label'>City:</span> {$formData['city']}</p>
+            <p><span class='label'>Occasion:</span> {$formData['occasion']}</p>
+            <p><span class='label'>Occasion Date:</span> {$formData['occasionDate']}</p>
+            <p><span class='label'>Message:</span> {$formData['message']}</p>
         </div>
     </body>
     </html>";
@@ -112,7 +132,7 @@ try {
 
         echo json_encode([
             'status' => 'success',
-            'message' => 'Thank you for your message! We will contact you soon.'
+            'message' => 'Request received ✨ Dream decor coming your way... 🎀🎉'
         ]);
     } else {
         throw new Exception("Failed to send email");

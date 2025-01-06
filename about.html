@@ -46974,7 +46974,8 @@
 
 
                                                                     
-                                                                    <div id="comp-lpc36pg6" role=""
+                                                                    
+                                            <div id="comp-lpc36pg6" role=""
                                                                         class="rM7ckN YJEKQk comp-lpc36pg6-container comp-lpc36pg6 wixui-box">
                                                                         <div class="YAf4Ti InKIFF wixui-box"></div>
                                                                         <div id="comp-lpc36pgf"
@@ -47214,7 +47215,7 @@
     /* Book Now Button Styles */
 .book-now-btn {
     display: inline-block;
-    padding: 7px 16px;
+    padding: 8px 16px;
     background-color: #000000;
     color: white;
     text-decoration: none;
@@ -47225,33 +47226,67 @@
     letter-spacing: 2px;
     font-family: 'Jassime', sans-serif;
     transition: all 0.3s;
-    border: none;
+    border: none; /* Added white border for contrast */
     min-width: 100px;
     text-align: center;
-    position: fixed; /* Changed back to absolute */
-    top: 20px;
-    right: 20px;
-    z-index: 2; /* Reduced z-index */
+    position: fixed;
+    top: 35px;
+    right: 45px;
+    z-index: 9999;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     opacity: 1;
     visibility: visible;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-
-/* Make sure the parent container has relative positioning */
-#comp-lpc36pg6 {
-    position: relative;
-}
-
-/* Adjust media query for mobile responsiveness */
+/* Mobile styles */
 @media screen and (max-width: 768px) {
     .book-now-btn {
-        top: 10px;
-        right: 15px;
-        font-size: 12px;
-        padding: 6px 12px;
+        position: fixed;
+        top: 35px !important; /* Position from top instead of bottom */
+        right: 15px !important;
+        font-size: 11px;
+        padding: 8px 16px !important;
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
         min-width: auto;
+        width: auto;
+        white-space: nowrap;
+        display: inline-block !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+        backdrop-filter: blur(5px); /* Adds blur effect behind the button */
+        -webkit-backdrop-filter: blur(5px);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+
     }
+}
+
+/* Smaller mobile screens */
+@media screen and (max-width: 480px) {
+    .book-now-btn {
+        top: -1px !important;
+        right: -20px !important;
+        font-size: 10px;
+        padding: 6px 12px !important;
+        background-color: rgba(0, 0, 0, 0.9); /* Slightly more opaque for smaller screens */
+    }
+}
+
+/* Hover effect for mobile */
+@media (hover: hover) {
+    .book-now-btn:hover {
+        background-color: rgba(0, 0, 0, 1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.book-now-btn {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .book-now-btn.hidden {
@@ -47259,6 +47294,7 @@
     visibility: hidden;
     pointer-events: none;
 }
+
 
 .book-now-btn:hover {
     background-color: #333333;
@@ -47556,8 +47592,8 @@ input::-webkit-calendar-picker-indicator:hover {
 
 @media screen and (max-width: 768px) {
     .book-now-btn {
-        top: 15px;
-        right: 15px;
+        top: 30px !important;
+        right: 4px !important;
         font-size: 12px;
         padding: 8px 12px;
         min-width: auto;
@@ -47634,13 +47670,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('eventForm');
     const locationInput = document.getElementById('locationSearch');
 
-    // Open popup function
-    window.openPopup = function() {
-        popup.classList.add('active');
-        popup.style.display = 'flex';
-        bookNowBtns.forEach(btn => btn.classList.add('hidden'));
-        document.body.style.overflow = 'hidden';
-    };
+    // Modify the openPopup function
+function openPopup() {
+    const popup = document.getElementById('eventPopup');
+    const bookNowBtns = document.querySelectorAll('.book-now-btn, .sidebar-btn');
+    const sliderPanel = document.getElementById('sliderPanel');
+    
+    // Show popup
+    popup.classList.add('active');
+    popup.style.display = 'flex';
+    
+    // Hide all book now buttons
+    bookNowBtns.forEach(btn => {
+        btn.style.opacity = '0';
+        btn.style.visibility = 'hidden';
+    });
+    
+    // Close the slider panel if it's open
+    if (sliderPanel.classList.contains('active')) {
+        toggleSlider();
+    }
+    
+    // Prevent scrolling on body
+    document.body.style.overflow = 'hidden';
+}
+
+// Modify the closePopup function
+function closePopup() {
+    const popup = document.getElementById('eventPopup');
+    const bookNowBtns = document.querySelectorAll('.book-now-btn');
+    
+    // Hide popup
+    popup.classList.remove('active');
+    popup.style.display = 'none';
+    
+    // Show book now buttons (except in mobile view)
+    bookNowBtns.forEach(btn => {
+        if (window.innerWidth > 768 || !btn.classList.contains('sidebar-btn')) {
+            btn.style.opacity = '1';
+            btn.style.visibility = 'visible';
+        }
+    });
+    
+    // Restore scrolling
+    document.body.style.overflow = 'auto';
+}
 
     // Close popup function
     window.closePopup = function() {
@@ -47664,7 +47738,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function formatPhoneNumber(input) {
+  // Phone number formatting for Indian numbers
+function formatPhoneNumber(input) {
     // Remove all non-digit characters
     let value = input.value.replace(/\D/g, '');
     
@@ -47698,7 +47773,6 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
         formatPhoneNumber(this);
     });
 });
-
     // Initialize Google Places Autocomplete
     function initPlacesAutocomplete() {
         const autocomplete = new google.maps.places.Autocomplete(locationInput, {
@@ -47794,23 +47868,6 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                 this.classList.remove('error');
             }
         });
-    }
-});
-
-// Add scroll event listener to handle button visibility
-window.addEventListener('scroll', function() {
-    const bookNowBtn = document.querySelector('.book-now-btn');
-    const btnContainer = document.getElementById('comp-lpc36pg6');
-    
-    if (bookNowBtn && btnContainer) {
-        const containerRect = btnContainer.getBoundingClientRect();
-        
-        // Hide button when container is not in viewport
-        if (containerRect.bottom < 0 || containerRect.top > window.innerHeight) {
-            bookNowBtn.classList.add('hidden');
-        } else {
-            bookNowBtn.classList.remove('hidden');
-        }
     }
 });
 </script>
@@ -47939,7 +47996,7 @@ window.addEventListener('scroll', function() {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 45px;
     position: relative;
     z-index: 10;
     height: 150px; /* Further reduced height */
@@ -48013,6 +48070,7 @@ window.addEventListener('scroll', function() {
                                                                 height="200" width="200" xmlns="http://www.w3.org/2000/svg" data-type="shape" 
                                                                 role="img" aria-label="Open site navigation">
                                                                 <g>
+                                                                    
                                                                     <path d="M156 64v6H44v-6h112z" />
                                                                     <path d="M156 97v6H44v-6h112z" />
                                                                     <path d="M156 130v6H44v-6h112z" />
@@ -48428,6 +48486,7 @@ window.addEventListener('scroll', function() {
 
                                 <div id="comp-lnyc60w4" class="comp-lnyc60w4 S6Dcte comp-lnyc60w4-container"
                                     slots="[object Object]">
+                                     
                                     <section id="comp-lnyc60w4_r_comp-lnr3x65k" tabindex="-1"
                                         data-block-level-container="Section"
                                         class="xuzjBY comp-lnyc60w4_r_comp-lnr3x65k wixui-section"
@@ -48480,6 +48539,7 @@ window.addEventListener('scroll', function() {
                                                                             <form aria-label="My Form"
                                                                                 id="form-c457617b-13d3-42a3-bd7b-708878f0f5fd"
                                                                                 data-hook="form-c457617b-13d3-42a3-bd7b-708878f0f5fd"
+                                                                                onsubmit="handleform2Submit(event)" 
                                                                                 class="">
                                                                                 <fieldset>
                                                                                     <div data-hook="form-root">
@@ -48522,7 +48582,7 @@ window.addEventListener('scroll', function() {
 " type="text" class="swb7szw  has-custom-focus" value="" /></div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                    <div class="sx_gs_J s__0_MKlm"
+                                                                                                        <div class="sx_gs_J s__0_MKlm"
                                                                                                         data-hook="field-error-first_name_9dd3">
                                                                                                     </div>
                                                                                                 </div>
@@ -48647,9 +48707,9 @@ window.addEventListener('scroll', function() {
                                                                                                                     data-empty-state="true"
                                                                                                                     aria-invalid="false"
                                                                                                                     required=""
-                                                                                                                    aria-label="Your 
-City
-" type="text" class="swb7szw  has-custom-focus" value="" /></div>
+                                                                                                                aria-label="Your 
+                                                                                                                                City
+                                                                                                                                " type="text" class="swb7szw  has-custom-focus" value="" /></div>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                     <div class="sx_gs_J s__0_MKlm"
@@ -48798,7 +48858,7 @@ City
                                                                                                             data-mobile="false"
                                                                                                             class="sIUEu8m sb0S1Ax slOkHDx od8zBS6--upgrade od8zBS6--wrapContent sW5rmTK oWwR3zx--upgrade swqxV_G sHAgkRZ"
                                                                                                             aria-live="assertive"
-                                                                                                            type="button"
+                                                                                                            type="submit"
                                                                                                             tabindex="0"
                                                                                                             aria-disabled="false"><span
                                                                                                                 class="sbYeLvR">Submit</span></button>
@@ -48825,6 +48885,101 @@ City
                                             </div>
                                         </div>
                                     </section>
+
+                                    <script>
+                                        async function handleform2Submit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    
+    try {
+        // Get all input values
+        const firstName = form.querySelector('[data-hook="form-field-first_name_9dd3"] input').value;
+        const email = form.querySelector('[data-hook="form-field-email_35dd"] input').value;
+        const contactNumber = form.querySelector('[data-hook="form-field-phone_6b4a"] input').value;
+        const city = form.querySelector('[data-hook="form-field-short_answer_cf00"] input').value;
+        const occasion = form.querySelector('[data-hook="form-field-short_answer_8a15"] input').value;
+        const occasionDate = form.querySelector('[data-hook="form-field-short_answer_c38d"] input').value;
+        const message = form.querySelector('[data-hook="form-field-short_answer_797e"] input').value;
+
+        // Validate required fields
+        if (!firstName || !email || !contactNumber || !city || !occasion || !message) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Sending...';
+
+        // Log the request for debugging
+        console.log('Sending form data:', {
+            firstName,
+            email,
+            contactNumber,
+            city,
+            occasion,
+            occasionDate,
+            message
+        });
+
+        const response = await fetch('form2.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                firstName,
+                email,
+                contactNumber,
+                city,
+                occasion,
+                occasionDate,
+                message
+            })
+        });
+
+
+        // Log the response for debugging
+        console.log('Response status:', response.status);
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            throw new Error('Invalid JSON response: ' + responseText);
+        }
+        
+        if (result.status === 'success') {
+            alert(result.message);
+            form.reset();
+        } else {
+            alert('Error: ' + (result.message || 'Unknown error occurred'));
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the form: ' + error.message);
+    } finally {
+        // Reset button state
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<span class="sbYeLvR">Submit</span>';
+    }
+}
+
+// Add event listener to the form
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('form-c457617b-13d3-42a3-bd7b-708878f0f5fd');
+    if (form) {
+        form.addEventListener('submit', handleform2Submit);
+    } else {
+        console.error('Form not found!');
+    }
+});
+</script>
                                 </div>
                                 </main>
                                 <footer id="comp-lnrmp8ga" class="comp-lnrmp8ga S6Dcte comp-lnrmp8ga-container"

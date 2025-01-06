@@ -216,7 +216,7 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Thank you for your booking request! We will contact you soon.'
+        'message' => 'Request received ✨ Dream decor coming your way... 🎀'
     ]);
 
 } catch (Exception $e) {

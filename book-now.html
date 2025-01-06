@@ -2094,6 +2094,7 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
     
     <!-- Logo and Tagline Container -->
  <div id="comp-lnye41jq_r_comp-lnrn1kfk" role="" class="rM7ckN YJEKQk comp-lnye41jq_r_comp-lnrn1kfk-container comp-lnye41jq_r_comp-lnrn1kfk wixui-box">
+    
      <div class="logo-tagline-container">
          <!-- Logo -->
          <a href="/" style="display: block; transition: transform 0.3s ease;">
@@ -2120,7 +2121,62 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
              <span class="tagline-text">ELEGANCE AT ITS BEST</span>
          </div>
      </div>
- 
+ <!-- Add this after the logo-tagline-container div -->
+<!-- Add this right after the tagline div, inside the logo-tagline-container -->
+<div class="header-whatsapp">
+    <a href="https://wa.me/918807793973" target="_blank" class="header-whatsapp-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#c18634">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+        </svg>
+        <span>+91 8807793973</span>
+    </a>
+</div>
+
+<style>
+/* Header WhatsApp Button Styling */
+.header-whatsapp {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.header-whatsapp-link {
+    display: flex;
+    gap: 8px;
+    text-decoration: none;
+    color: #c18634;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+    align-content: space-around;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    flex-direction: row;
+    margin-right: -501px;
+    margin-top: 40px;
+}
+
+.header-whatsapp-link:hover {
+    transform: scale(1.05);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .header-whatsapp {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .header-whatsapp-link {
+        font-size: 12px;
+    }
+    
+    .header-whatsapp-link svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+</style>
  
      <style>
          /* Logo and Tagline Styling */
@@ -2130,13 +2186,16 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
              align-items: center;
              justify-content: center;
              text-align: center;
-             padding: 10px 0;
+             padding: 0px 0;
+             margin-left: 30px;
+             
          }
          
          .logo-image {
              display: block;
              margin: 0 auto;
              max-width: 150px;
+             margin-top: 10px;
          }
          
          .tagline {
@@ -2157,6 +2216,10 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
          @media (max-width: 768px) {
              .logo-image {
                  max-width: 120px;
+                 margin-top: 0px;
+             }
+             .logo-tagline-container {
+                 margin-left: 151px;
              }
              
              .tagline-text {
@@ -2342,19 +2405,25 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
         </div>
     </section>
 <style>
-    /* Main container styles */
+   /* Main container styles */
 .booking-section {
     min-height: 100vh;
     width: 100%;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    display: block; /* Changed from flex to block */
-    background: url('media/Part 5 Picture Perfect/DSC05353.jpg') center/cover no-repeat fixed;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.75), 
+        rgba(0, 0, 0, 0.75)
+    ),
+    url('media/Part 5 Picture Perfect/DSC05353.jpg') center/cover no-repeat;
+    background-attachment: fixed;
     padding: 80px 20px 20px 20px;
     z-index: 0;
 }
-
 /* Dark overlay */
 .booking-section::before {
     content: '';
@@ -2365,6 +2434,7 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
     bottom: 0;
     background: rgba(0, 0, 0, 0.75);
     z-index: -1;
+    display: none;
 }
 
 .booking-container {
@@ -2376,6 +2446,8 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     position: relative;
     margin: 60px auto; /* Changed to center the container */
+    -webkit-overflow-scrolling: touch; /* Add smooth scrolling for iOS */
+
 }
 
 .logo-container {
@@ -2544,9 +2616,30 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
         padding: 20px;
         width: 100%;
         border-radius: 15px;
-        margin: 40px auto;
+        margin: 10px auto;
     }
+    .booking-section {
+        padding: 60px 10px 10px 10px;
+        background: linear-gradient(
+            rgba(0, 0, 0, 0.5), 
+            rgba(0, 0, 0, 0.5)
+        ),
+        url('media/Part 5 Picture Perfect/DSC05353.jpg') center/cover no-repeat;
+        background-attachment: scroll; /* Change to scroll for mobile */
+        background-position: center 0; /* Position from top */
 
+    }
+      /* Add momentum scrolling for iOS */
+      .booking-section, .booking-container {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .logo-container img {
+    width: 100%;
+    height: auto;
+    margin-top: 151px;
+    filter: brightness(1.2);
+}
     .name-fields {
         flex-direction: column;
         gap: 10px;
@@ -2773,7 +2866,8 @@ style="--responsive-img-object-fit: contain;
 transform: scale(0.9);
 transition: transform 0.3s ease;
 display: block;
-margin: auto;" />
+margin: auto;"
+ />
 </picture>
                 </div>
                 <div id="comp-lnrmp8ga_r_comp-loem0u9a"
