@@ -38546,9 +38546,9 @@
 }
 
 .book-now-btn.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    opacity: 0 ;
+    visibility: hidden ;
+    pointer-events: none ;
 }
 
 
@@ -38920,57 +38920,43 @@ input::-webkit-calendar-picker-indicator:hover {
 </style>
 
 <script>
+
+// Add this to your existing JavaScript
+// Add this to your existing JavaScript
+document.addEventListener('scroll', function() {
+    const bookNowBtn = document.querySelector('.book-now-btn');
+    if (window.scrollY > 100) { // After scrolling 100px
+        bookNowBtn.classList.add('hidden');
+    } else {
+        bookNowBtn.classList.remove('hidden');
+    }
+});
+
+// Remove the duplicate scroll event listener
+// Delete or comment out this section:
+/*
+document.addEventListener('scroll', function() {
+    const bookNowBtn = document.querySelector('.book-now-btn');
+    if (window.scrollY > 100) { 
+        bookNowBtn.classList.add('scrolled');
+    } else {
+        bookNowBtn.classList.remove('scrolled');
+    }
+});
+*/
 document.addEventListener('DOMContentLoaded', function() {
     const bookNowBtns = document.querySelectorAll('.book-now-btn');
     const popup = document.getElementById('eventPopup');
     const form = document.getElementById('eventForm');
     const locationInput = document.getElementById('locationSearch');
 
-    // Modify the openPopup function
-function openPopup() {
-    const popup = document.getElementById('eventPopup');
-    const bookNowBtns = document.querySelectorAll('.book-now-btn, .sidebar-btn');
-    const sliderPanel = document.getElementById('sliderPanel');
-    
-    // Show popup
-    popup.classList.add('active');
-    popup.style.display = 'flex';
-    
-    // Hide all book now buttons
-    bookNowBtns.forEach(btn => {
-        btn.style.opacity = '0';
-        btn.style.visibility = 'hidden';
-    });
-    
-    // Close the slider panel if it's open
-    if (sliderPanel.classList.contains('active')) {
-        toggleSlider();
-    }
-    
-    // Prevent scrolling on body
-    document.body.style.overflow = 'hidden';
-}
-
-// Modify the closePopup function
-function closePopup() {
-    const popup = document.getElementById('eventPopup');
-    const bookNowBtns = document.querySelectorAll('.book-now-btn');
-    
-    // Hide popup
-    popup.classList.remove('active');
-    popup.style.display = 'none';
-    
-    // Show book now buttons (except in mobile view)
-    bookNowBtns.forEach(btn => {
-        if (window.innerWidth > 768 || !btn.classList.contains('sidebar-btn')) {
-            btn.style.opacity = '1';
-            btn.style.visibility = 'visible';
-        }
-    });
-    
-    // Restore scrolling
-    document.body.style.overflow = 'auto';
-}
+    // Open popup function
+    window.openPopup = function() {
+        popup.classList.add('active');
+        popup.style.display = 'flex';
+        bookNowBtns.forEach(btn => btn.classList.add('hidden'));
+        document.body.style.overflow = 'hidden';
+    };
 
     // Close popup function
     window.closePopup = function() {
@@ -39127,6 +39113,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     }
 });
 </script>
+
 
                                                                             
                                                                     </div>
