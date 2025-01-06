@@ -93,7 +93,7 @@ try {
 
     // Recipients
     $mail->setFrom('serenevaughan6@imcourageous.com', 'Dream Decors');
-    $mail->addAddress('sarathyadav112@gmail.com'); // Replace with your email
+    $mail->addAddress('ddecors2022@gmail.com'); // Replace with your email
     $mail->addReplyTo($formData['email']);
 
     // Content
