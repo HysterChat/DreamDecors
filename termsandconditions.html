@@ -2965,9 +2965,11 @@ closePopup();
 
 <style>
 .terms-and-conditions-section {
-    padding: 60px 20px;
+    padding: 160px 20px 60px; /* Increased top padding to account for header */
     background: #fff;
     min-height: 100vh;
+    position: relative;
+    z-index: 1; /* Ensure content is above background but below header */
 }
 
 .terms-container {
