@@ -2780,7 +2780,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         .u4cNtA .fEGEM_>.kGvnrc>.xfxJ27 {
-            color: rgb(var(--txt, var(--color_15, color_15)));
+            color: rgb(var(--txt, var(--color_15, color_15))) !important;
             display: inline;
             font: var(--fnt, var(--font_1));
             overflow: hidden;
@@ -46172,27 +46172,62 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-/* Make sure the parent container has relative positioning */
-#comp-lpc36pg6 {
-    position: relative;
-}
 
-/* Adjust media query for mobile responsiveness */
+/* Mobile styles */
 @media screen and (max-width: 768px) {
     .book-now-btn {
-        top: 10px;
-        right: 15px;
-        font-size: 12px;
-        padding: 6px 12px;
+        position: fixed;
+        top: 35px !important; /* Position from top instead of bottom */
+        right: 15px !important;
+        font-size: 11px;
+        padding: 8px 16px !important;
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
         min-width: auto;
+        width: auto;
+        white-space: nowrap;
+        display: inline-block !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+        backdrop-filter: blur(5px); /* Adds blur effect behind the button */
+        -webkit-backdrop-filter: blur(5px);
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+
     }
 }
 
-.book-now-btn.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+/* Smaller mobile screens */
+@media screen and (max-width: 480px) {
+    .book-now-btn {
+        font-size: 10px;
+        padding: 6px 12px !important;
+        background-color: rgba(0, 0, 0, 0.9); /* Slightly more opaque for smaller screens */
+    }
 }
+
+/* Hover effect for mobile */
+@media (hover: hover) {
+    .book-now-btn:hover {
+        background-color: rgba(0, 0, 0, 1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+}
+
+.book-now-btn {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.book-now-btn.hidden {
+    opacity: 0 !important; /* Override any other opacity settings */
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
 
 .book-now-btn:hover {
     background-color: #333333;

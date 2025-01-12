@@ -2539,7 +2539,7 @@
         }
 
         .u4cNtA .fEGEM_>.kGvnrc>.xfxJ27 {
-            color: rgb(var(--txt, var(--color_15, color_15)));
+            color: rgb(var(--txt, var(--color_15, color_15))) !important;
             display: inline;
             font: var(--fnt, var(--font_1));
             overflow: hidden;
@@ -38539,16 +38539,12 @@
     }
 }
 
-.book-now-btn {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
+/* Update the hidden class */
 .book-now-btn.hidden {
-    opacity: 0 ;
-    visibility: hidden ;
-    pointer-events: none ;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    display: none !important; /* Force hide the button */
 }
 
 
@@ -38954,16 +38950,20 @@ document.addEventListener('DOMContentLoaded', function() {
     window.openPopup = function() {
         popup.classList.add('active');
         popup.style.display = 'flex';
-        bookNowBtns.forEach(btn => btn.classList.add('hidden'));
-        document.body.style.overflow = 'hidden';
+        bookNowBtns.forEach(btn => {
+        btn.classList.add('hidden');
+        btn.style.display = 'none'; // Force hide
+    });        document.body.style.overflow = 'hidden';
     };
 
     // Close popup function
     window.closePopup = function() {
         popup.classList.remove('active');
         popup.style.display = 'none';
-        bookNowBtns.forEach(btn => btn.classList.remove('hidden'));
-        document.body.style.overflow = 'auto';
+        bookNowBtns.forEach(btn => {
+        btn.classList.remove('hidden');
+        btn.style.display = ''; // Reset display property
+    });        document.body.style.overflow = 'auto';
     };
 
     // Close popup when clicking outside
