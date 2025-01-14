@@ -2975,7 +2975,7 @@ closePopup();
                 }
        
                 .rotating-circle text {
-                    fill: rgb(238, 184, 20) !important; /* Changed to white */
+                    fill: rgb(252, 252, 252) !important; /* Changed to white */
                     font-family: 'Jassime', serif !important;
                     font-size: 20px !important; /* Increased from 14px */
                     letter-spacing: 1px !important;
@@ -2994,7 +2994,7 @@ closePopup();
                         </defs>
                         <text>
                             <textPath href="#circular-text" startOffset="0%">
-                                ELEGANCE IS THE BEST • DREAM DECORS • ELEGANCE IS THE BEST • DREAM DECORS •
+                                ELEGANCE AT IT’S BEST • DREAM DECORS • ELEGANCE AT IT’S BEST • DREAM DECORS •
                             </textPath>
                         </text>
                     </svg>
@@ -3027,7 +3027,7 @@ closePopup();
 
 <section id="comp-lnqzzitz" tabindex="" class="xuzjBY comp-lnqzzitz wixui-section" style="margin-top: -0.8px; position: relative; z-index: 1;">
     <div data-testid="responsive-container-content" class="comp-lnqzzitz-container">
-        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 20px; margin-top: 20px;">EXPERIENCES CAPTURED</h2>
+        <h2 class="font_0 wixui-rich-text__text" style="text-align: center; margin-bottom: 20px; margin-top: 60px;">EXPERIENCES CAPTURED</h2>
         
         <div class="gallery-container">
             <div class="gallery-scroll">
@@ -3135,125 +3135,62 @@ closePopup();
     </div>
 </section>
 <style>
-.gallery-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 20px 0;
-    cursor: grab;
-    position: relative;
-}
-
-.gallery-container::-webkit-scrollbar {
-    display: none;
-}
-
-.gallery-scroll {
-    display: flex;
-    gap: 20px;
-    padding: 0 20px;
-    width: max-content;
-    transition: transform 0.3s ease;
-}
-
-.gallery-group {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.gallery-item {
-    flex: 0 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.gallery-item:hover {
-    transform: scale(1.02);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
-}
-
-.vertical {
-    width: 300px;
-    height: 200px;
-}
-
-.large {
-    width: 600px;
-    height: 420px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
-}
-
-.modal-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: none;
-    padding: 15px;
-    cursor: pointer;
-    font-size: 24px;
-    border-radius: 5px;
-    display: none;
-    z-index: 1001;
-}
-
-.modal:hover .modal-nav {
-    display: block;
-}
-
-.prev { left: 20px; }
-.next { right: 20px; }
-
-.close {
-    position: absolute;
-    top: 50px;
-    right: 50px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.modal img {
-    max-width: 90%;
-    max-height: 90vh;
-    margin: auto;
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    object-fit: contain;
-}
-
-@media (max-width: 768px) {
+    .gallery-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        cursor: grab;
+        position: relative;
+    }
+    
+    .gallery-container::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .gallery-scroll {
+        display: flex;
+        gap: 20px;
+        padding: 0 20px;
+        width: max-content;
+        transition: transform 0.3s ease;
+    }
+    
     .gallery-group {
+        display: flex;
         flex-direction: column;
-        width: 300px;
+        gap: 20px;
+    }
+    
+    #comp-lnqzzitz {
+        margin-bottom: -60px; /* Reduce space below gallery section */
+    }
+    
+    #comp-lodif2px {
+        margin-top: -100px !important; /* Reduce space above the next section */
+        padding-top: 0 !important; /* Remove any additional padding */
+    }
+    
+    
+    .gallery-item {
+        flex: 0 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .gallery-item:hover {
+        transform: scale(1.02);
+    }
+    
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
     }
     
     .vertical {
@@ -3262,11 +3199,83 @@ closePopup();
     }
     
     .large {
-        width: 300px;
+        width: 600px;
         height: 420px;
     }
-}
-</style>
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+    }
+    
+    .modal-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: none;
+        padding: 15px;
+        cursor: pointer;
+        font-size: 24px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1001;
+    }
+    
+    .modal:hover .modal-nav {
+        display: block;
+    }
+    
+    .prev { left: 20px; }
+    .next { right: 20px; }
+    
+    .close {
+        position: absolute;
+        top: 50px;
+        right: 50px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 1001;
+    }
+    
+    .modal img {
+        max-width: 90%;
+        max-height: 90vh;
+        margin: auto;
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+    }
+    
+    @media (max-width: 768px) {
+        .gallery-group {
+            flex-direction: column;
+            width: 300px;
+        }
+        
+        .vertical {
+            width: 300px;
+            height: 200px;
+        }
+        
+        .large {
+            width: 300px;
+            height: 420px;
+        }
+    }
+    </style>
 
 <script>
     class InfiniteGallery {
