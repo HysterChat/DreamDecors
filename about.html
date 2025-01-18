@@ -47283,11 +47283,7 @@
     }
 }
 
-.book-now-btn {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
+
 
 .book-now-btn.hidden {
     opacity: 0 !important; /* Override any other opacity settings */
@@ -47699,16 +47695,20 @@ document.addEventListener('DOMContentLoaded', function() {
     window.openPopup = function() {
         popup.classList.add('active');
         popup.style.display = 'flex';
-        bookNowBtns.forEach(btn => btn.classList.add('hidden'));
-        document.body.style.overflow = 'hidden';
+        bookNowBtns.forEach(btn => {
+        btn.classList.add('hidden');
+        btn.style.display = 'none'; // Force hide
+    });        document.body.style.overflow = 'hidden';
     };
 
     // Close popup function
     window.closePopup = function() {
         popup.classList.remove('active');
         popup.style.display = 'none';
-        bookNowBtns.forEach(btn => btn.classList.remove('hidden'));
-        document.body.style.overflow = 'auto';
+        bookNowBtns.forEach(btn => {
+        btn.classList.remove('hidden');
+        btn.style.display = ''; // Reset display property
+    });        document.body.style.overflow = 'auto';
     };
 
     // Close popup when clicking outside
@@ -48105,7 +48105,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
         </nav>
     </div>
 </div>
-   <style>
+<style>
 
 
 /* Add these new styles */
@@ -48117,9 +48117,9 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
 
 .sidebar-btn {
     display: block;
-    background-color: #1A6AFF;
+    background-color: #000;
     color: white;
-    color: #ffffff !important; /* Force white color and override any inheritance */
+        color: #ffffff !important; /* Force white color and override any inheritance */
 
     padding: 10px 20px;
     border-radius: 4px;
@@ -48127,6 +48127,8 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     margin-bottom: 20px;
     text-decoration: none;
     font-weight: 500;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .sidebar-icons {
@@ -48156,16 +48158,7 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
     }
 }
 
-/* Mobile styles */
-@media screen and (max-width: 768px) {
-    .book-now-btn, .social-icons {
-        display: none;
-    }
-    
-    .mobile-only {
-        display: block;
-    }
-}
+
 
                                             .slider-panel {
                                                 position: fixed;
@@ -48241,33 +48234,63 @@ document.querySelectorAll('input[type="tel"]').forEach(input => {
                                             }
                                             </style>
                                             <script>
-                                            // Add click handler to your SVG button
-                                            document.querySelector('[aria-label="Open site navigation"]').addEventListener('click', toggleSlider);
-
-                                            // Create overlay element
-                                            const overlay = document.createElement('div');
-                                            overlay.className = 'slider-overlay';
-                                            document.body.appendChild(overlay);
-
-                                            function toggleSlider() {
-                                                const slider = document.getElementById('sliderPanel');
-                                                slider.classList.toggle('active');
-                                                overlay.classList.toggle('active');
-                                            }
-
-                                            // Close slider when clicking overlay
-                                            overlay.addEventListener('click', toggleSlider);
-
-                                            // Close slider when pressing Escape key
-                                            document.addEventListener('keydown', function(e) {
-                                                if (e.key === 'Escape') {
-                                                    const slider = document.getElementById('sliderPanel');
-                                                    if (slider.classList.contains('active')) {
-                                                        toggleSlider();
-                                                    }
-                                                }
-                                            });
-                                            </script>
+    // Add click handler to your SVG button
+    document.querySelector('[aria-label="Open site navigation"]').addEventListener('click', toggleSlider);
+    
+    // Create overlay element
+    const overlay = document.createElement('div');
+    overlay.className = 'slider-overlay';
+    document.body.appendChild(overlay);
+    
+    function toggleSlider() {
+        const slider = document.getElementById('sliderPanel');
+        const bookNowBtns = document.querySelectorAll('.book-now-btn');
+        const overlay = document.querySelector('.slider-overlay');
+        
+        slider.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Hide/show all book now buttons
+        bookNowBtns.forEach(btn => {
+            if (slider.classList.contains('active')) {
+                if (!btn.classList.contains('sidebar-btn')) {
+                    btn.style.opacity = '0';
+                    btn.style.visibility = 'hidden';
+                    
+                    btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+                }
+            } else {
+                if (!btn.classList.contains('sidebar-btn')) {
+                    btn.style.opacity = '1';
+                    btn.style.visibility = 'visible';
+                    btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+                }
+            }
+        });
+    }
+    
+    // Add click handler for sidebar book now button
+    document.querySelector('.sidebar-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = '/book-now';
+        toggleSlider(); // Close the slider after clicking
+         openPopup();  // Call openPopup instead of navigating
+    // toggleSlider(); // Close the slider after clicking   
+    });
+    
+    // Close slider when clicking overlay
+    overlay.addEventListener('click', toggleSlider);
+    
+    // Close slider when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const slider = document.getElementById('sliderPanel');
+            if (slider.classList.contains('active')) {
+                toggleSlider();
+            }
+        }
+    });
+    </script>
         
 
                  
