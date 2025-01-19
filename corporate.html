@@ -2930,7 +2930,7 @@ width: 70%;
 @media screen and (max-width: 768px) {
 .book-now-btn {
     top: 60px;
-        right: 1px;
+        right: 7px;
         font-size: 12px;
         padding: 8px 12px;
         min-width: auto;
@@ -3210,7 +3210,7 @@ closePopup();
                         </defs>
                         <text>
                             <textPath href="#circular-text" startOffset="0%">
-                                ELEGANCE AT IT’S BEST • DREAM DECORS • ELEGANCE AT IT’S BEST • DREAM DECORS •
+                                ELEGANCE AT IT’S BEST• DREAM DECORS•ELEGANCE AT IT’S BEST • DREAM DECORS •
                             </textPath>
                         </text>
                     </svg>
@@ -3466,6 +3466,20 @@ closePopup();
         background-color: rgba(0, 0, 0, 0.9);
         z-index: 1000;
     }
+     /* Add specific mobile styles */
+     @media (max-width: 768px) {
+        .close {
+            top: 10px;
+            right: 10px;
+            font-size: 35px;
+            padding: 3px;
+        }
+        
+        .modal img {
+            max-width: 95%; /* Increase from 90% for mobile */
+            max-height: 95vh;
+        }
+    }
     
     .modal-nav {
         position: absolute;
@@ -3529,6 +3543,8 @@ closePopup();
         }
     }
     </style>
+
+
 <script>
     class InfiniteGallery {
         constructor() {
@@ -3550,6 +3566,8 @@ closePopup();
             this.closeBtn = this.modal.querySelector('.close');
             this.prevBtn = this.modal.querySelector('.prev');
             this.nextBtn = this.modal.querySelector('.next');
+            this.bookNowButtons = document.querySelectorAll('.book-now-btn');
+
             
             // Bind modal controls
             this.closeBtn.addEventListener('click', () => this.closeModal());
@@ -3681,11 +3699,29 @@ closePopup();
             // Show navigation buttons
             this.prevBtn.style.display = 'block';
             this.nextBtn.style.display = 'block';
+
+            // Hide all book now buttons
+            this.bookNowButtons.forEach(btn => {
+                if (!btn.classList.contains('sidebar-btn')) {
+                    btn.style.opacity = '0';
+                    btn.style.visibility = 'hidden';
+                    btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+                }
+            });
         }
     
         closeModal() {
             this.modal.style.display = 'none';
             this.startAutoScroll();
+
+            // Show all book now buttons
+            this.bookNowButtons.forEach(btn => {
+                if (!btn.classList.contains('sidebar-btn')) {
+                    btn.style.opacity = '1';
+                    btn.style.visibility = 'visible';
+                    btn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+                }
+            });
         }
     
         changeImage(direction) {
