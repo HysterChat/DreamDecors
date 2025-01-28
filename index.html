@@ -24,9 +24,50 @@
     type="image/png" />
 
    
+    <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    
+        // Optional: Also prevent keyboard shortcuts for developer tools and other functions
+        document.addEventListener('keydown', function(e) {
+            // Prevent F12
+            if(e.keyCode == 123) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Prevent Ctrl+Shift+I (Chrome, Firefox, Safari)
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Prevent Ctrl+Shift+J (Chrome, Firefox)
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Prevent Ctrl+U (Chrome, Firefox, Safari, IE)
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
 
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XZ15WCZVM2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-XZ15WCZVM2');
+</script>
     <!-- Performance API Polyfills -->
     <script>
         (function () {

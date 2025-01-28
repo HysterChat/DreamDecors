@@ -262,6 +262,40 @@
 <style data-href="https://static.parastorage.com/services/editor-elements-library/dist/thunderbolt/rb_wixui.thunderbolt[PageSections].07863b8c.min.css">.c1rIl3{display:contents}</style>
 <style data-href="https://static.parastorage.com/services/wix-thunderbolt/dist/TPABaseComponent.27e1e284.chunk.min.css">.OQ8Tzd,.nKphmK{overflow:hidden}.nKphmK{height:100%;position:relative;width:100%}.nKphmK:-ms-fullscreen{min-height:auto!important}.nKphmK:fullscreen{min-height:auto!important}.pvlz2w{visibility:hidden}</style>
 <style data-href="https://static.parastorage.com/services/wix-thunderbolt/dist/group_7.bae0ce0c.chunk.min.css">.TWFxr5{height:auto!important}.May50y{overflow:hidden!important}</style>
+
+<script>
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+    // Optional: Also prevent keyboard shortcuts for developer tools and other functions
+    document.addEventListener('keydown', function(e) {
+        // Prevent F12
+        if(e.keyCode == 123) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+I (Chrome, Firefox, Safari)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+J (Chrome, Firefox)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+U (Chrome, Firefox, Safari, IE)
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
 <title>Reception Decorations in Chennai - Elegant & Stunning Designs</title>  <link rel="canonical" href="reception.html"/>
   <meta property="og:title" content="Reception| Dream Decors"/>
   <meta property="og:url" content="https://www.desidreamdecors.com/reception"/>

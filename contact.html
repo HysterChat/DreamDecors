@@ -7711,6 +7711,40 @@
     <meta property="og:site_name" content="Dream Decors" />
     <meta name="keywords" content="wedding planner, wedding decor, event decorator, event management, party planner, wedding decoration, corporate event planner, best event planners in Chennai, wedding planners near me, event organizers, wedding decor, event planning services, wedding decorators in Chennai, birthday party decorators, event planning company, theme wedding decor, event management services, decor for events, wedding styling, custom event decor, event setup, luxury wedding decor, event decor, wedding decor, Top wedding decor in Chennai, corporate event decoration, Haldi decor, Sangeet decor, reception decor, event decorations, customized decor, Dream Decors, Destination wedding decor, beach wedding decor, Wedding Planners Near Me, Event Planners Near Me, Event Management Services, Minimalistic Wedding Decor, Elegant wedding decor" />
     <meta property="og:type" content="website" />
+
+    <script>
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+    // Optional: Also prevent keyboard shortcuts for developer tools and other functions
+    document.addEventListener('keydown', function(e) {
+        // Prevent F12
+        if(e.keyCode == 123) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+I (Chrome, Firefox, Safari)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+J (Chrome, Firefox)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+U (Chrome, Firefox, Safari, IE)
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
     
     <script
         type="application/ld+json">{"@context":"https://schema.org/","@type":"WebSite","url":"https://www.desidreamdecors.in/","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.desidreamdecors.in/search?q={search_term}"},"query-input":"required name=search_term"}}</script>

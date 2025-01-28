@@ -3303,7 +3303,39 @@ margin: auto;"
     </g>
 </svg>
 </div></a></div></div></div></div></div></div></div></div></div></div></div></div></div></div><div id="comp-lob8bnk8-pinned-layer" class="comp-lob8bnk8-pinned-layer big2ZD"><div id="comp-lob8bnk8" class="comp-lob8bnk8 S6Dcte comp-lob8bnk8-container" slots="[object Object]"><div id="comp-lob8bnk8_r_comp-lob8bluq" class="OQ8Tzd comp-lob8bnk8_r_comp-lob8bluq pvlz2w"><iframe class="nKphmK" title="Wix Chat" aria-label="Wix Chat" scrolling="no" allowfullscreen="" allowtransparency="true" allowvr="true" frameBorder="0" allow="clipboard-write;autoplay;camera;microphone;geolocation;vr"></iframe></div></div></div></div></div><div id="SCROLL_TO_BOTTOM" class="Vd6aQZ ignore-focus SCROLL_TO_BOTTOM" tabindex="-1" role="region" aria-label="bottom of page"><span class="mHZSwn">bottom of page</span></div></div></div>
+<script>
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
 
+    // Optional: Also prevent keyboard shortcuts for developer tools and other functions
+    document.addEventListener('keydown', function(e) {
+        // Prevent F12
+        if(e.keyCode == 123) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+I (Chrome, Firefox, Safari)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+Shift+J (Chrome, Firefox)
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Prevent Ctrl+U (Chrome, Firefox, Safari, IE)
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
 
  
 
