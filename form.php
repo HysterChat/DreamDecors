@@ -2,6 +2,9 @@
 // Add PHPMailer classes at the very top
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Google\Client;
+use Google\Service\Sheets;
+use Google\Service\Sheets\ValueRange;
 
 // Require the Composer autoloader
 require 'vendor/autoload.php';
@@ -23,15 +26,96 @@ if (isset($_FILES['referenceDesign']) && $_FILES['referenceDesign']['error'] !==
     error_log('File upload error: ' . $_FILES['referenceDesign']['error']);
 }
 
+// Add this function before the try-catch block
+function initializeGoogleClient() {
+    $client = new Client();
+    $client->setApplicationName('Dream Decors Form');
+    $client->setScopes([Sheets::SPREADSHEETS]);
+    $client->setAuthConfig('credentials.json'); // You'll need to add this file
+    return $client;
+}
+
+// Add this function to handle Google Sheets submission
+function saveToGoogleSheets($formData) {
+    try {
+        $client = initializeGoogleClient();
+        $service = new Sheets($client);
+        
+        $spreadsheetId = '1cqwI7q8rVpPbNjO-Rec1Tb6Vt5nGHi3oxVUZfnt2Ujk';
+        $range = 'Sheet1!A:N';
+        
+        // Prepare row data
+        $values = [
+            [
+                date('Y-m-d H:i:s'),
+                $formData['firstName'],
+                $formData['lastName'],
+                $formData['contactNumber'],
+                $formData['altContactNumber'],
+                $formData['email'],
+                $formData['eventDate'],
+                $formData['eventVenue'],
+                $formData['eventType'],
+                $formData['location'],
+                $formData['eventLocation'],
+                $formData['decorType'],
+                $formData['numberOfGuests'],
+                $formData['budget'],
+                $formData['additionalDetails']
+            ]
+        ];
+
+        $body = new ValueRange([
+            'values' => $values
+        ]);
+
+        $params = [
+            'valueInputOption' => 'RAW'
+        ];
+
+        $result = $service->spreadsheets_values->append(
+            $spreadsheetId,
+            $range,
+            $body,
+            $params
+        );
+        return true;
+
+    } catch (Google\Service\Exception $e) {
+        $error = json_decode($e->getMessage(), true);
+        $errorMessage = $error['error']['message'] ?? 'Unknown Google Sheets error';
+        error_log("Google Sheets Error: " . $errorMessage);
+        
+        // Log detailed error for debugging
+        error_log("Full Google Sheets Error: " . print_r($error, true));
+        return false;
+
+    } catch (Exception $e) {
+        error_log("Unexpected Google Sheets Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Add error handling function at the top
+function returnError($message) {
+    ob_clean();
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $message
+    ]);
+    exit;
+}
+
 try {
     // Verify PHPMailer is installed
     if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
-        throw new Exception('PHPMailer not installed. Please run: composer require phpmailer/phpmailer');
+        returnError('PHPMailer not installed. Please run: composer require phpmailer/phpmailer');
     }
 
     // Validate request method
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-        throw new Exception('Invalid request method');
+        returnError('Invalid request method');
     }
 
     // Debug: Log received data
@@ -183,6 +267,12 @@ try {
         throw new Exception("Failed to save booking data");
     }
 
+    // Add this after saving booking data and before sending emails
+    if (!saveToGoogleSheets($formData)) {
+        error_log("Failed to save to Google Sheets - continuing with form submission");
+        // Don't throw an exception, just continue with the rest of the process
+    }
+
     // Send email to all recipients
     foreach ($to_emails as $to) {
         if (!sendEmail($to, $subject, $emailContent, $formData['email'])) {
@@ -211,7 +301,7 @@ try {
 
     sendEmail($formData['email'], $customerSubject, $customerContent, 'info@dreamdecors.com');
 
-    // Ensure clean output before JSON response
+    // Clean output buffer before success response
     ob_clean();
 
     echo json_encode([
@@ -222,18 +312,8 @@ try {
 } catch (Exception $e) {
     // Log the error
     error_log("Form Error: " . $e->getMessage());
-
-    // Clean output buffer
-    ob_clean();
-
-    // Send error response
-    http_response_code(500);
-    echo json_encode([
-        'status' => 'error',
-        'message' => $e->getMessage()
-    ]);
+    returnError($e->getMessage());
 }
 
-// Flush and end output
-ob_end_flush();
+// Ensure we end the script properly
 exit;
