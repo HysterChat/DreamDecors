@@ -4,6 +4,9 @@
 <!-- Mirrored from www.dreamdecors.com/wedding by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 17 Nov 2024 09:11:25 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
+
+
+
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1" id="wixDesktopViewport" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,6 +40,17 @@
   <script nomodule="" src="../static.parastorage.com/unpkg/focus-within-polyfill%405.0.9/dist/focus-within-polyfill.js"></script>
 
   <script nomodule="" src="../polyfill-fastly.io/v3/polyfill.mind82c.js?features=fetch"></script>
+
+
+<!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XZ15WCZVM2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XZ15WCZVM2');
+</script>
 
   <!-- Performance API Polyfills -->
   <script>
@@ -3351,12 +3365,20 @@ margin: auto;"
     });
 </script>
 
+
 <!-- Google tag (gtag.js) event -->
 <script>
-    gtag('event', 'conversion_event_submit_lead_form', {
-      // <event_parameters>
-    });
-  </script>
+    document.getElementById('eventForm').addEventListener('submit', function(event) {
+  // Normal form submission logic
+  
+  // Track the conversion event
+  gtag('event', 'conversion_event_submit_lead_form', { 
+    'send_to': 'G-XZ15WCZVM2', 
+    'value': 500, 
+    'currency': 'INR' 
+  });
+});
+</script>
   
 
  
