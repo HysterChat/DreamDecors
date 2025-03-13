@@ -42619,6 +42619,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <!-- warmup data end -->
 
+    <!-- Google tag (gtag.js) event -->
+<script>
+    document.getElementById('eventForm').addEventListener('submit', function(event) {
+  // Normal form submission logic
+  
+  // Track the conversion event
+  gtag('event', 'conversion_event_submit_lead_form', { 
+    'send_to': 'G-XZ15WCZVM2', 
+    'value': 500, 
+    'currency': 'INR' 
+  });
+});
+</script>
 
 
 
