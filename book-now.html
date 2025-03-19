@@ -2876,170 +2876,332 @@ url("https://static.wixstatic.com/ufonts/0aa7b8_a469ac7becd54a8ca8be493e67f7c8ea
 </style>
 
     
-     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('eventForm');
-
-    if(form) {
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const submitButton = form.querySelector('.form-submit-button');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            
-            try {
-                // Create FormData object
-                const formData = new FormData(form);
+<script>
+    // Google Analytics gtag.js configuration
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XZ15WCZVM2'); // Replace 'YOUR-GA-MEASUREMENT-ID' with your actual Google Analytics Measurement ID.
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('eventForm');
+    
+        if(form) {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
                 
-                // Validate form before submission
-                if (!validateForm(form)) {
-                    throw new Error('Please fill in all required fields correctly');
-                }
-
-                // Handle file upload
-                const fileInput = form.querySelector('input[type="file"]');
-                if (fileInput && fileInput.files[0]) {
-                    // Validate file size (max 5MB)
-                    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
-                    if (fileInput.files[0].size > maxSize) {
-                        throw new Error('File size should not exceed 5MB');
+                const submitButton = form.querySelector('.form-submit-button');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+                
+                try {
+                    const formData = new FormData(form);
+                    
+                    if (!validateForm(form)) {
+                        throw new Error('Please fill in all required fields correctly');
                     }
-
-                    // Validate file type
-                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-                    if (!allowedTypes.includes(fileInput.files[0].type)) {
-                        throw new Error('Please upload only image files (JPEG, PNG, JPG, GIF)');
+    
+                    const fileInput = form.querySelector('input[type="file"]');
+                    if (fileInput && fileInput.files[0]) {
+                        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                        if (fileInput.files[0].size > maxSize) {
+                            throw new Error('File size should not exceed 5MB');
+                        }
+    
+                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                        if (!allowedTypes.includes(fileInput.files[0].type)) {
+                            throw new Error('Please upload only image files (JPEG, PNG, JPG, GIF)');
+                        }
                     }
-                }
-
-                // Send the form data with file
-                const response = await fetch('form.php', {
-                    method: 'POST',
-                    body: formData, // FormData automatically handles multipart/form-data
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    // Show success message using SweetAlert2
+    
+                    const response = await fetch('form.php', {
+                        method: 'POST',
+                        body: formData,
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        gtag('event', 'submission', {
+                            'event_category': 'Form',
+                            'event_label': 'Booking',
+                            'value': 1
+                        });
+    
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: result.message,
+                            icon: 'success',
+                            confirmButtonColor: '#c18634'
+                        });
+    
+                        form.reset();
+                        window.location.href = '/';
+                    } else {
+                        throw new Error(result.message || 'Submission failed');
+                    }
+    
+                } catch (error) {
+                    console.error('Submission error:', error);
+    
+                    gtag('event', 'error', {
+                        'event_category': 'Form',
+                        'event_label': error.message,
+                        'value': 0
+                    });
+    
                     await Swal.fire({
-                        title: 'Success!',
-                        text: result.message,
-                        icon: 'success',
+                        title: 'Error!',
+                        text: error.message || 'Something went wrong. Please try again.',
+                        icon: 'error',
                         confirmButtonColor: '#c18634'
                     });
-
-                    // Reset form and redirect
-                    form.reset();
-                    window.location.href = '/';
-                    
-                } else {
-                    throw new Error(result.message || 'Submission failed');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit';
                 }
-
-            } catch (error) {
-                console.error('Submission error:', error);
-                
-                // Show error message
-                await Swal.fire({
-                    title: 'Error!',
-                    text: error.message || 'Something went wrong. Please try again.',
-                    icon: 'error',
-                    confirmButtonColor: '#c18634'
-                });
-            } finally {
-                // Re-enable submit button
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit';
-            }
-        });
-    }
-});
-
-// Form validation function
-function validateForm(form) {
-    let isValid = true;
-    
-    // Clear previous errors
-    form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
-
-    // Validate required fields
-    form.querySelectorAll('[required]').forEach(field => {
-        if (!validateField(field)) {
-            isValid = false;
+            });
         }
     });
-
-    return isValid;
-}
-
-// Individual field validation
-function validateField(field) {
-    if (!field.value.trim()) {
-        field.classList.add('error');
-        return false;
+    
+    function validateForm(form) {
+        let isValid = true;
+        form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
+    
+        form.querySelectorAll('[required]').forEach(field => {
+            if (!validateField(field)) {
+                isValid = false;
+            }
+        });
+    
+        return isValid;
     }
-
-    if (field.type === 'tel') {
-        const phoneNumber = field.value.replace(/\D/g, '');
-        if (phoneNumber.length !== 10) {
-            field.classList.add('error');
-            // Optionally show a custom error message
-            showError(field, 'Please enter a valid 10-digit phone number');
-            return false;
-        }
-    }
-
-    if (field.type === 'email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(field.value)) {
+    
+    function validateField(field) {
+        if (!field.value.trim()) {
             field.classList.add('error');
             return false;
         }
+    
+        if (field.type === 'tel') {
+            const phoneNumber = field.value.replace(/\D/g, '');
+            if (phoneNumber.length !== 10) {
+                field.classList.add('error');
+                showError(field, 'Please enter a valid 10-digit phone number');
+                return false;
+            }
+        }
+    
+        if (field.type === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(field.value)) {
+                field.classList.add('error');
+                return false;
+            }
+        }
+    
+        if (field.type === 'file' && field.files.length > 0) {
+            const file = field.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            
+            if (file.size > maxSize) {
+                field.classList.add('error');
+                showError(field, 'File size should not exceed 5MB');
+                return false;
+            }
+            
+            if (!allowedTypes.includes(file.type)) {
+                field.classList.add('error');
+                showError(field, 'Please upload only image files (JPEG, PNG, JPG, GIF)');
+                return false;
+            }
+        }
+    
+        field.classList.remove('error');
+        return true;
     }
+    
+    function showError(field, message) {
+        const existingError = field.parentElement.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+    
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        field.parentElement.appendChild(errorDiv);
+    }
+    </script>
 
-    if (field.type === 'file' && field.files.length > 0) {
-        const file = field.files[0];
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-        
-        if (file.size > maxSize) {
+    // Google Analytics gtag.js configuration
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'YOUR-GA-MEASUREMENT-ID'); // Replace 'YOUR-GA-MEASUREMENT-ID' with your actual Google Analytics Measurement ID.
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('eventForm');
+    
+        if(form) {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const submitButton = form.querySelector('.form-submit-button');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+                
+                try {
+                    const formData = new FormData(form);
+                    
+                    if (!validateForm(form)) {
+                        throw new Error('Please fill in all required fields correctly');
+                    }
+    
+                    const fileInput = form.querySelector('input[type="file"]');
+                    if (fileInput && fileInput.files[0]) {
+                        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                        if (fileInput.files[0].size > maxSize) {
+                            throw new Error('File size should not exceed 5MB');
+                        }
+    
+                        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                        if (!allowedTypes.includes(fileInput.files[0].type)) {
+                            throw new Error('Please upload only image files (JPEG, PNG, JPG, GIF)');
+                        }
+                    }
+    
+                    const response = await fetch('form.php', {
+                        method: 'POST',
+                        body: formData,
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+    
+                    const result = await response.json();
+    
+                    if (result.status === 'success') {
+                        gtag('event', 'submission', {
+                            'event_category': 'Form',
+                            'event_label': 'Booking',
+                            'value': 1
+                        });
+    
+                        await Swal.fire({
+                            title: 'Success!',
+                            text: result.message,
+                            icon: 'success',
+                            confirmButtonColor: '#c18634'
+                        });
+    
+                        form.reset();
+                        window.location.href = '/';
+                    } else {
+                        throw new Error(result.message || 'Submission failed');
+                    }
+    
+                } catch (error) {
+                    console.error('Submission error:', error);
+    
+                    gtag('event', 'error', {
+                        'event_category': 'Form',
+                        'event_label': error.message,
+                        'value': 0
+                    });
+    
+                    await Swal.fire({
+                        title: 'Error!',
+                        text: error.message || 'Something went wrong. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#c18634'
+                    });
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit';
+                }
+            });
+        }
+    });
+    
+    function validateForm(form) {
+        let isValid = true;
+        form.querySelectorAll('.error').forEach(field => field.classList.remove('error'));
+    
+        form.querySelectorAll('[required]').forEach(field => {
+            if (!validateField(field)) {
+                isValid = false;
+            }
+        });
+    
+        return isValid;
+    }
+    
+    function validateField(field) {
+        if (!field.value.trim()) {
             field.classList.add('error');
-            showError(field, 'File size should not exceed 5MB');
             return false;
         }
-        
-        if (!allowedTypes.includes(file.type)) {
-            field.classList.add('error');
-            showError(field, 'Please upload only image files (JPEG, PNG, JPG, GIF)');
-            return false;
+    
+        if (field.type === 'tel') {
+            const phoneNumber = field.value.replace(/\D/g, '');
+            if (phoneNumber.length !== 10) {
+                field.classList.add('error');
+                showError(field, 'Please enter a valid 10-digit phone number');
+                return false;
+            }
         }
+    
+        if (field.type === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(field.value)) {
+                field.classList.add('error');
+                return false;
+            }
+        }
+    
+        if (field.type === 'file' && field.files.length > 0) {
+            const file = field.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            
+            if (file.size > maxSize) {
+                field.classList.add('error');
+                showError(field, 'File size should not exceed 5MB');
+                return false;
+            }
+            
+            if (!allowedTypes.includes(file.type)) {
+                field.classList.add('error');
+                showError(field, 'Please upload only image files (JPEG, PNG, JPG, GIF)');
+                return false;
+            }
+        }
+    
+        field.classList.remove('error');
+        return true;
     }
-
-    field.classList.remove('error');
-    return true;
-}
-
-// Helper function to show error messages
-function showError(field, message) {
-    // Remove any existing error message
-    const existingError = field.parentElement.querySelector('.error-message');
-    if (existingError) {
-        existingError.remove();
+    
+    function showError(field, message) {
+        const existingError = field.parentElement.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+    
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        field.parentElement.appendChild(errorDiv);
     }
+    </script>
 
-    // Create and insert error message
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    field.parentElement.appendChild(errorDiv);
-}
-</script>
+
 </main>
 <!-- Add SweetAlert2 for better alerts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

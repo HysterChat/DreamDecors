@@ -304,9 +304,11 @@ try {
     // Clean output buffer before success response
     ob_clean();
 
+    // Add gtag tracking code to the success response
     echo json_encode([
         'status' => 'success',
-        'message' => 'Request received ✨ Dream decor coming your way... 🎀'
+        'message' => 'Request received ✨ Dream decor coming your way... 🎀',
+        'tracking' => true  // Add this flag to trigger tracking on frontend
     ]);
 
 } catch (Exception $e) {
