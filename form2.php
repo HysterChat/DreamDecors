@@ -77,7 +77,7 @@ function saveToGoogleSheets($formData) {
         $service = new Sheets($client);
         
         $spreadsheetId = '1cqwI7q8rVpPbNjO-Rec1Tb6Vt5nGHi3oxVUZfnt2Ujk';
-        $range = 'Sheet1!A:H';
+        $range = 'Sheet1!A:I';
         
         // Prepare row data
         $values = [
@@ -89,7 +89,10 @@ function saveToGoogleSheets($formData) {
                 $formData['city'],
                 $formData['occasion'],
                 $formData['occasionDate'],
-                $formData['message']
+                $formData['message'],
+                $formData['hearAboutUs'] === 'Other' ? 
+                    $formData['hearAboutUs'] . ': ' . $formData['otherSource'] : 
+                    $formData['hearAboutUs']
             ]
         ];
 
@@ -141,7 +144,9 @@ try {
         'city' => $_POST['city'] ?? '',
         'occasion' => $_POST['occasion'] ?? '',
         'occasionDate' => $_POST['occasionDate'] ?? '',
-        'message' => $_POST['message'] ?? ''
+        'message' => $_POST['message'] ?? '',
+        'hearAboutUs' => $_POST['hearAboutUs'] ?? '',
+        'otherSource' => $_POST['otherSource'] ?? ''
     ];
 
     // Validate required fields
@@ -189,6 +194,10 @@ try {
             <p><span class='label'>Occasion:</span> {$formData['occasion']}</p>
             <p><span class='label'>Occasion Date:</span> {$formData['occasionDate']}</p>
             <p><span class='label'>Message:</span> {$formData['message']}</p>
+            <p><span class='label'>How Did You Hear About Us:</span> " . 
+            ($formData['hearAboutUs'] === 'Other' ? 
+                $formData['hearAboutUs'] . ': ' . $formData['otherSource'] : 
+                $formData['hearAboutUs']) . "</p>
         </div>
     </body>
     </html>";

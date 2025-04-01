@@ -42,7 +42,7 @@ function saveToGoogleSheets($formData) {
         $service = new Sheets($client);
         
         $spreadsheetId = '1cqwI7q8rVpPbNjO-Rec1Tb6Vt5nGHi3oxVUZfnt2Ujk';
-        $range = 'Sheet1!A:N';
+        $range = 'Sheet1!A:O';
         
         // Prepare row data
         $values = [
@@ -61,7 +61,10 @@ function saveToGoogleSheets($formData) {
                 $formData['decorType'],
                 $formData['numberOfGuests'],
                 $formData['budget'],
-                $formData['additionalDetails']
+                $formData['additionalDetails'],
+                $formData['hearAboutUs'] === 'Other' ? 
+                    $formData['hearAboutUs'] . ': ' . $formData['otherSource'] : 
+                    $formData['hearAboutUs']
             ]
         ];
 
@@ -137,7 +140,9 @@ try {
         'decorType' => $_POST['decorType'] ?? '',
         'numberOfGuests' => $_POST['numberOfGuests'] ?? '',
         'budget' => $_POST['budget'] ?? '',
-        'additionalDetails' => $_POST['additionalDetails'] ?? ''
+        'additionalDetails' => $_POST['additionalDetails'] ?? '',
+        'hearAboutUs' => $_POST['hearAboutUs'] ?? '',
+        'otherSource' => $_POST['otherSource'] ?? ''
     ];
 
     // Validate required fields
@@ -203,6 +208,10 @@ try {
             <p><span class='label'>Number of Guests:</span> {$formData['numberOfGuests']}</p>
             <p><span class='label'>Budget:</span> {$formData['budget']}</p>
             <p><span class='label'>Additional Details:</span> {$formData['additionalDetails']}</p>
+            <p><span class='label'>How Did You Hear About Us:</span> " . 
+            ($formData['hearAboutUs'] === 'Other' ? 
+                $formData['hearAboutUs'] . ': ' . $formData['otherSource'] : 
+                $formData['hearAboutUs']) . "</p>
         </div>
     </body>
     </html>
@@ -293,6 +302,7 @@ try {
             <li>Event Type: {$formData['eventType']}</li>
             <li>Event Date: {$formData['eventDate']}</li>
             <li>Location: {$formData['location']}</li>
+            <li>Decor Type: {$formData['decorType']}</li>
         </ul>
         <p>Best regards,<br>Dream Decors Team</p>
     </body>
