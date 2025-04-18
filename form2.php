@@ -210,13 +210,13 @@ try {
         $mail->isSMTP();
         $mail->Host = 'mail.smtp2go.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'imcourageous.com';
-        $mail->Password = 'ep1XvG9sVMo00jdz';
+        $mail->Username = 'desidreamdecors.in';
+        $mail->Password = 'bJkUu826VoCKuyEf';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 2525;
 
         // Recipients
-        $mail->setFrom('serenevaughan6@imcourageous.com', 'Dream Decors');
+        $mail->setFrom('hysteresis@desidreamdecors.in', 'Dream Decors');
         $mail->addAddress($to);
         $mail->addReplyTo($formData['email']);
 
@@ -235,12 +235,12 @@ try {
     $customerMail->isSMTP();
     $customerMail->Host = 'mail.smtp2go.com';
     $customerMail->SMTPAuth = true;
-    $customerMail->Username = 'imcourageous.com';
-    $customerMail->Password = 'ep1XvG9sVMo00jdz';
+    $customerMail->Username = 'desidreamdecors.in';
+    $customerMail->Password = 'bJkUu826VoCKuyEf';
     $customerMail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $customerMail->Port = 2525;
 
-    $customerMail->setFrom('serenevaughan6@imcourageous.com', 'Dream Decors');
+    $customerMail->setFrom('hysteresis@desidreamdecors.in', 'Dream Decors');
     $customerMail->addAddress($formData['email']);
 
     $customerMail->isHTML(true);

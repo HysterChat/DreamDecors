@@ -233,13 +233,13 @@ try {
             $mail->isSMTP();
             $mail->Host = 'mail.smtp2go.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'imcourageous.com';
-            $mail->Password = 'ep1XvG9sVMo00jdz';
+            $mail->Username = 'desidreamdecors.in';
+            $mail->Password = 'bJkUu826VoCKuyEf';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 2525;
 
             // Recipients
-            $mail->setFrom('serenevaughan6@imcourageous.com', 'Dream Decors');
+            $mail->setFrom('hysteresis@desidreamdecors.in', 'Dream Decors');
             $mail->addAddress($to);
             $mail->addReplyTo($from);
 
